@@ -1,24 +1,43 @@
-import React, {Component, PropTypes} from "react";
-import {View, Text, TextInput, TouchableOpacity, Button} from "react-native";
+import React, { 
+	Component, 
+	PropTypes
+} from 'react';
+
+import { 
+	View, 
+	Text, 
+	TextInput, 
+	TouchableOpacity, 
+	Button 
+} from "react-native";
+import {Actions as routes} from "react-native-router-flux";
 import {Loader} from "app/common/components";
 import commonStyles from "app/common/styles";
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { MessageBar, MessageBarManager } from 'react-native-message-bar';
 
-
-
-
-const INITIAL_STATE = {username: '', password: ''};
+const INITIAL_STATE = {email: '', password: ''};
 
 class Login extends Component {
-	// static propTypes = {
-	// 	errorStatus: PropTypes.string.isRequired,
-	// 	login: PropTypes.func.isRequired
-	// };
+	static propTypes = {
+		// errorStatus: PropTypes.string.isRequired,
+		// login: PropTypes.func.isRequired
+	};
 
 	constructor() {
 		super();
-		this.state = {...INITIAL_STATE};
+		this.state = {
+			email: '', 
+			password: ''
+		};
 	}
+	componentDidMount() {
+    MessageBarManager.registerMessageBar(this.refs.alert);
+	}
+
+  componentWillUnmount() {
+    MessageBarManager.unregisterMessageBar();
+  }
 
 	render() {
 		const {errorStatus, loading} = this.props;
@@ -33,13 +52,13 @@ class Login extends Component {
 						/>
 						<TextInput
 							style={commonStyles.inputusername}
-							value={this.state.username}
+							value={this.state.email}
 							underlineColorAndroid = 'transparent'
 							autoCorrect={false}
 							placeholder="Email Address"
 							maxLength={140}
 							onSubmitEditing={() => this.onSubmit()}
-							onChangeText={(username) => this.setState({username})}
+							onChangeText={(email) => this.setState({email})}
 						/>
 					</View>
 					<View style ={commonStyles.iconpassword}>
@@ -70,33 +89,33 @@ class Login extends Component {
 
 
 				{errorStatus ? <Text style={commonStyles.errorText}>{errorStatus}</Text> : undefined}
-				{loading ? <Loader/> : undefined}
 
-				<TouchableOpacity style={{ backgroundColor: '#fff', alignItems: 'center', padding : 20 }}>
+				<TouchableOpacity style={{ alignItems: 'center', padding : 20 }}>
 				<Text>Forgot password</Text>
 				</TouchableOpacity>
 
-				<TouchableOpacity style={{ backgroundColor: '#fff', alignItems: 'center', padding : 20 }}>
+				<TouchableOpacity style={{  alignItems: 'center', padding : 20 }}>
 				<Text style={{color : '#87cefa'}}>New Customer ?</Text>
 				</TouchableOpacity>
 
 
 				<Button
-					onPress = {this.createAcount()}
+					onPress = {this.createAcount.bind(this)}
   					title="Create An Acount"
   					color="orange"
   					/>
+  					<MessageBar ref="alert" />
 			</View>
 		);
 	}
-	createAcount () {
-
+	createAcount () { 
+		routes.registerPage();
 	}
 
 	onSubmit() {
-		const {username, password} = this.state;
+		const {email, password} = this.state;
 		this.setState({...INITIAL_STATE, loading: true});
-		this.props.login(username, password);
+		this.props.login(email, password);
 	}
 }
 

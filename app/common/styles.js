@@ -12,7 +12,7 @@ export default StyleSheet.create({
 	},
 	iconusername : {
     	flexDirection: 'row', 
-    	borderBottomWidth: 1,
+    	borderBottomWidth: 0.5,
 		borderColor: 'red',
     },
 
@@ -29,18 +29,12 @@ export default StyleSheet.create({
 	},
 	inputusername: {
 		flex: 1,
-    	paddingTop: 10,
-    	paddingRight: 10,
-    	paddingBottom: 10,
     	paddingLeft: 0,
     	backgroundColor: '#fff',
     	color: '#424242',
     },
 	inputpassword: {
 		flex: 1,
-    	paddingTop: 10,
-    	paddingRight: 10,
-    	paddingBottom: 10,
     	paddingLeft: 0,
     	backgroundColor: '#fff',
     	color: '#424242',
@@ -54,10 +48,16 @@ export default StyleSheet.create({
 		fontStyle: 'italic'
 	},
 	errorText: {
-		backgroundColor: 'red',
-		color: 'white',
+		color: 'red',
 		padding: 5,
 		fontWeight: "700",
 		fontStyle: 'italic'
-	}
+	},
+	registerContent : { 
+		borderColor: 'red',
+		borderWidth: 0.5,
+		borderStyle: 'solid',
+		borderRadius: 5,
+	},
+
 });
