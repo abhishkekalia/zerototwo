@@ -14,7 +14,7 @@ import {
 } from "react-native-router-flux";
 import CardStackStyleInterpolator from 'react-navigation/src/views/CardStack/CardStackStyleInterpolator';
 import {connect} from "react-redux";
-import RegisterPage from "./Signup/register"
+import Register from "./Signup/register"
 import HomePage from "./dashboard/DashboardPage";
 import LoginPage from "./auth/LoginPage";
 import ProfilePage from "./profile/ProfilePage";
@@ -23,6 +23,8 @@ import Menu from './components/menu/Menu';
 
 import CustomNavBar from "./components/CustomNavBar";
 import TabIcon from './components/TabIcon';
+import WelcomeScreen from './components/WelcomeScreen';
+import MainView from './components/MainView';
 
 // const reducerCreate = params => (state, action) => Reducer(params)(state, action);
 
@@ -56,7 +58,7 @@ const Routes = ({loading, needSignIn}) => (
     	                <Lightbox key="lightbox">
 		                    <Stack 
 		                    hideNavBar 
-		                    key="loginPage"> 
+		                    key="loginPage">
           					 	<Scene key="loginPage" component={LoginPage} title="loginPage" initial type={ActionConst.REPLACE} /> 
 
           					 	<Drawer 
@@ -69,7 +71,7 @@ const Routes = ({loading, needSignIn}) => (
           					 	key ="home"  
           					 	navigationBarStyle={{ backgroundColor: '#87cefa' }}
           					 	 titleStyle={{alignSelf: 'center'}}>
-                					<Scene key="homePage" initial={!needSignIn} component={HomePage} title="Home" type="replace"/> 
+                					<Scene key="homePage" initial={!needSignIn} component={MainView} title="Home" type="replace"/> 
 
                 				</Stack>
 
@@ -79,8 +81,9 @@ const Routes = ({loading, needSignIn}) => (
 					            backTitle="Back"
 					            duration={0}
                                 key="profilePage"
+                                titleStyle={{ color: 'black', alignSelf: 'center' }}
                                 navigationBarStyle={{ backgroundColor: '#87cefa' }}>
-               					 	<Scene key="registerPage" component={RegisterPage} title="Registaration" /> 
+               					 	<Scene key="registerPage" component={Register} title="Registaration" /> 
                                 	<Scene key="profile" component={ProfilePage} title="Profile"/> 
                                 </Stack>
 

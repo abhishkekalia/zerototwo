@@ -17,6 +17,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import PasswordInputText from 'react-native-hide-show-password-input';
 import { Picker } from 'react-native-picker-dropdown';
 import { SegmentedControls } from 'react-native-radio-buttons';
+import Utils from 'app/common/Utils'
 
 const INITIAL_STATE = { 
 	fullname: '', 
@@ -185,25 +186,25 @@ class Register extends Component {
 		this.setState({...INITIAL_STATE, loading: true});
 
 	let formData = new FormData();
-	formData.append('fullname', String(Ebiztrait));
+	formData.append('fullname', String(fullname));
 	formData.append('email', String(email));
 	formData.append('password', String(password));
 	formData.append('gender', String(gender.value));
 	formData.append('country', String(country));
+	formData.append('user_type', String(3));
 	formData.append('device_type', String(os));
-	formData.append('device_token', Math.random().toString());
+	formData.append('device_token', String(Math.random().toString()));
 	formData.append('phone_no', String(contact)); 
 	formData.append('address', String(address)); 
-	formData.append('representative_name', String(os)); 
-	formData.append('device_type', String(os)); 
-	formData.append('facebook_id', String(os)); 
-	formData.append('twitter_id', String(os)); 
-	formData.append('instagram_id', String(os)); 
-	formData.append('snapchat_id', String(os)); 
-	formData.append('card_number', String(os)); 
-	formData.append('expiry_month', String(os)); 
-	formData.append('expiry_year', String(os)); 
-	formData.append('cvv', String(os)); 
+	formData.append('representative_name', String('Ankita')); 
+	formData.append('facebook_id', String('sdfs')); 
+	formData.append('twitter_id', String('fsdfsd')); 
+	formData.append('instagram_id', String('sdfsdf')); 
+	formData.append('snapchat_id', String('dfdsf')); 
+	formData.append('card_number', String('343454645664')); 
+	formData.append('expiry_month', String('3')); 
+	formData.append('expiry_year', String('20')); 
+	formData.append('cvv', String('456')); 
 
 
 	console.warn(JSON.stringify(formData));
@@ -218,7 +219,7 @@ class Register extends Component {
                 body: formData,
             }
 	
-	fetch("http://solutiontrackers.com/dev-a/zerototwo/index.php/Webservice/register", config) 
+	fetch(Utils.gurl()+'/register', config) 
     .then((response) => response.json()) 
     .then((responseData) => {
     		console.warn(JSON.stringify(responseData.response));

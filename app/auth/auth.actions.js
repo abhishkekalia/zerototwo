@@ -1,5 +1,6 @@
 import {Actions as routes} from "react-native-router-flux";
 import { MessageBarManager } from 'react-native-message-bar';
+import Utils from 'app/common/Utils'
 
 export const AUTH_LOGIN_START = 'AUTH_LOGIN_START';
 export const AUTH_LOGIN_SUCCESS = 'AUTH_LOGIN_SUCCESS';
@@ -38,7 +39,7 @@ const loginSuccess = (username, password) => {
                 },
                 body: formData,
             }
-    fetch("http://solutiontrackers.com/dev-a/zerototwo/index.php/Webservice/login", config) 
+    fetch(Utils.gurl()+"/login", config) 
     .then((response) => response.json()) 
     .then((responseData) => {
     	 if (responseData.response.status) { 
