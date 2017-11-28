@@ -1,96 +1,68 @@
 import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { Actions } from 'react-native-router-flux'
+import Entypo from 'react-native-vector-icons/Entypo';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const styles = StyleSheet.create({
-  container: {
-    height: (Platform.OS === 'ios') ? 64 : 54,
-    flexDirection: 'row',
-    paddingTop: 20,
-  },
-  navBarItem: {
-    flex: 1,
-    justifyContent: 'center'
-  }
-})
 
 export default class CustomNavBar extends React.Component {
-
   // constructor(props) {
   //   super(props)
   // }
-
-  _renderLeft() {
-    if (Actions.currentScene === 'customNavBar1') {
-      return (
-        <TouchableOpacity
-          onPress={() => console.log('Hamburger button pressed')}
-          style={[styles.navBarItem, { paddingLeft: 10}]}>
-          <Image
-            style={{width: 30, height: 50}}
-            resizeMode="contain"
-            source={{uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Hamburger_icon.svg/1200px-Hamburger_icon.svg.png'}}></Image>
-        </TouchableOpacity>
-      )
-    } else {
-      return (
-        <TouchableOpacity
-          onPress={Actions.pop}
-          style={[styles.navBarItem, { paddingLeft: 10}]}>
-          <Image
-            style={{width: 30, height: 50}}
-            resizeMode="contain"
-            source={{uri: 'https://image.flaticon.com/icons/png/512/0/340.png'}}></Image>
-        </TouchableOpacity>
-      )
-    }
-  }
-
-  _renderMiddle() {
-    return (
-      <View style={styles.navBarItem}>
-        <Text>{ this.props.title }</Text>
-      </View>
-    )
-  }
-
-  _renderRight() {
-    return (
-      <View style={[styles.navBarItem, { flexDirection: 'row', justifyContent: 'flex-end' }]}>
-        <TouchableOpacity
-          onPress={() => console.log('Share')}
-          style={{ paddingRight: 10}}>
-          <Image
-            style={{width: 30, height: 50}}
-            resizeMode="contain"
-            source={{uri: 'https://cdn3.iconfinder.com/data/icons/glypho-free/64/share-512.png'}}></Image>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => console.log('Search')}
-          style={{ paddingRight: 10 }}>
-          <Image
-            style={{width: 30, height: 50}}
-            resizeMode="contain"
-            source={{uri: 'https://maxcdn.icons8.com/Share/icon/p1em/Very_Basic//search1600.png'}}></Image>
-        </TouchableOpacity>
-      </View>
-    )
-  }
-
-  render() {
-    let dinamicStyle = {}
-    if (Actions.currentScene === 'customNavBar1') {
-      dinamicStyle = { backgroundColor: 'red'}
-    } else {
-      dinamicStyle = { backgroundColor: 'yellow'}
+    _renderLeft() {
+        return (
+            <TouchableOpacity
+            onPress={Actions.pop}
+            style={[styles.navBarItem, { paddingLeft: 10}]}>
+                <Entypo name="cross" 
+                size={20  } 
+                color="#fff"
+                />
+            </TouchableOpacity>
+        )
     }
 
-    return (
-        <View style={[styles.container, dinamicStyle]}>
-          { this._renderLeft() }
-          { this._renderMiddle() }
-          { this._renderRight() }
-        </View>
-    )
-  }
+    _renderMiddle() { 
+        return (
+            <View style={styles.navBarItem}>
+                <Text style={{color: '#fff'}}>Filters</Text>
+            </View>
+        )
+    }
+
+    _renderRight() {
+        return ( 
+            <View style={[styles.navBarItem, { flexDirection: 'row',justifyContent: 'flex-end', alignItems: 'center' }]}>
+                <TouchableOpacity
+                onPress={() => console.warn('refresh')}
+                style={{ paddingRight: 10 }}>
+                    <Ionicons name="ios-refresh" 
+                    size={20} 
+                    color="#fff"/>
+                </TouchableOpacity>
+            </View>
+        )
+    }
+
+    render() {
+        let dinamicStyle = {backgroundColor: '#87cefa'}
+        return (
+            <View style={[styles.container, dinamicStyle]}>
+                { this._renderLeft() }
+                { this._renderMiddle() }
+                { this._renderRight() }
+            </View>
+        )
+    }
 }
+
+const styles = StyleSheet.create({ 
+    container: { 
+        height: (Platform.OS === 'ios') ? 40 : 40, 
+        flexDirection: 'row'
+    }, 
+    navBarItem: { 
+        flex: 1, 
+        justifyContent: 'center'
+    }
+})

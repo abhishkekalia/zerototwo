@@ -11,17 +11,18 @@ export default class Button extends Component {
 
 const styles = StyleSheet.create({
 	button: {
-		marginBottom: 10,
-		padding: 10,
-		backgroundColor: 'orange',
+		margin: 5,
+		padding: 5,
 		borderRadius: 24,
 		alignItems: 'center',
+		borderWidth : 1,
+		borderColor : "#87cefa",
 		shadowOpacity: 0.2,
 		shadowRadius: 2,
-		shadowOffset:{width:2,height:4}
+		// shadowOffset:{width:2,height:4}
 	},
 	text: {
-		color: 'white',
-		fontSize: 18
+		color: '#000',
+		fontSize: 12
 	}
 });

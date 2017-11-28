@@ -7,13 +7,13 @@ export const AUTH_LOGIN_SUCCESS = 'AUTH_LOGIN_SUCCESS';
 export const AUTH_LOGIN_FAIL = 'AUTH_LOGIN_FAIL';
 export const AUTH_LOGOUT = 'AUTH_LOGOUT';
 
-export const login = (username, password) => {
+export const login = (username, password, os) => {
 	return dispatch => {
 		dispatch(loginStart());
 
 		setTimeout(() => {
 			if (username.length && password.length) {
-				return dispatch(loginSuccess(username, password));
+				return dispatch(loginSuccess(username, password, os));
 			}
 			return dispatch(loginFail(new Error('username and password fields are required')));
 		}, Math.random() * 1000 + 500)
@@ -26,10 +26,12 @@ const loginStart = () => {
 	}
 };
 
-const loginSuccess = (username, password) => {
+const loginSuccess = (username, password, os) => {
 	let formData = new FormData();
 	formData.append('email', String(username));
 	formData.append('password', String(password)); 
+	formData.append('device_type', String(os)); 
+	formData.append('device_token', String('urtihFTYR6767UTYU^TJKHUT65gG')); 
 
 	const config = { 
                 method: 'POST', 

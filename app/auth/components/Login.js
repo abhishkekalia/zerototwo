@@ -8,7 +8,8 @@ import {
 	Text, 
 	TextInput, 
 	TouchableOpacity, 
-	Button 
+	Button ,
+	Platform
 } from "react-native";
 import {Actions as routes} from "react-native-router-flux";
 import {Loader} from "app/common/components";
@@ -28,7 +29,9 @@ class Login extends Component {
 		super();
 		this.state = {
 			email: '', 
-			password: ''
+			password: '',
+			os : (Platform.OS === 'ios') ? 2 : 1,
+
 		};
 	}
 	componentDidMount() {
@@ -113,9 +116,9 @@ class Login extends Component {
 	}
 
 	onSubmit() {
-		const {email, password} = this.state;
+		const {email, password, os} = this.state;
 		this.setState({...INITIAL_STATE, loading: true});
-		this.props.login(email, password);
+		this.props.login(email, password, os);
 	}
 }
 

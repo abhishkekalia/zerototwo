@@ -7,7 +7,8 @@ import {
 	Button, 
 	Switch,
 	ScrollView,
-	Platform
+	Platform,
+	Picker
 } from "react-native";
 import {Loader} from "app/common/components";
 import commonStyles from "app/common/styles";
@@ -15,7 +16,6 @@ import {Actions as routes} from "react-native-router-flux";
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import PasswordInputText from 'react-native-hide-show-password-input';
-import { Picker } from 'react-native-picker-dropdown';
 import { SegmentedControls } from 'react-native-radio-buttons';
 import Utils from 'app/common/Utils'
 
