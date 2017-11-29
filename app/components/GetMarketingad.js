@@ -75,7 +75,8 @@ export default class GetMarketing extends Component {
 
     renderData(data, rowData: string, sectionID: number, rowID: number, index) {
         return (
-            <TouchableOpacity style={styles.row}> 
+            <TouchableOpacity style={styles.row} onPress={()=> Actions.timeLine({ 
+                    uri : data.productImage })}> 
                         <Image style={styles.thumb} 
                             source={{ uri : data.productImage}}/>
               

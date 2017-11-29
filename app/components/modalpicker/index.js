@@ -12,11 +12,15 @@ import {
     Text,
     ScrollView,
     TouchableOpacity,
-    Platform
+    Platform,
+    Image
 } from 'react-native';
 
 import styles from './style';
 import BaseComponent from './BaseComponent';
+import checkbox from '../images/icon-checkbox.png'
+import checkboxChecked from '../images/icon-checkbox-checked.png'
+
 
 let componentIndex = 0;
 
@@ -115,6 +119,7 @@ export default class ModalPicker extends BaseComponent {
             <TouchableOpacity key={option.key} onPress={()=>this.onChange(option)}>
                 <View style={[styles.optionStyle, this.props.optionStyle]}>
                     <Text style={[styles.optionTextStyle,this.props.optionTextStyle]}>{option.ShopName}</Text>
+                    <Image style={styles.checkbox} source={checkbox} />
                 </View>
             </TouchableOpacity>)
     }
@@ -163,9 +168,9 @@ export default class ModalPicker extends BaseComponent {
     render() {
 
         const dp = (
-          <Modal transparent={true} ref="modal" visible={this.state.modalVisible} onRequestClose={this.close} animationType={this.state.animationType}>
-          {this.renderOptionList()}
-          </Modal>
+            <Modal transparent={true} ref="modal" visible={this.state.modalVisible} onRequestClose={this.close} animationType={this.state.animationType}>
+                {this.renderOptionList()}
+            </Modal>
         );
 
         return (

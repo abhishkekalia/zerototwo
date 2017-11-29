@@ -22,182 +22,25 @@ import AllItem from './AllItem';
 const { width } = Dimensions.get('window')
 let index = 0;
 
-const data =   [
-        {
-            "u_id": "2",
-            "email": "ankitagol.ebiztrait@gmail.com",
-            "ShopName": "Ebiztrait",
-            "representative_name": "Ankita Gol",
-            "ur_id": "3",
-            "gender": "female",
-            "mobile": "1234567891",
-            "country_id": "1",
-            "address": "ahmedabad",
-            "created_on": "2017-10-24 04:40:40"
-        },
-        {
-            "u_id": "4",
-            "email": "chirag.ebiztrait@gmail.com",
-            "ShopName": "Chirag",
-            "representative_name": "",
-            "ur_id": "3",
-            "gender": "male",
-            "mobile": "7485963214",
-            "country_id": "1",
-            "address": "Ahmedabad",
-            "created_on": "2017-10-24 17:09:31"
-        },
-        {
-            "u_id": "6",
-            "email": "copper@gmail.com",
-            "ShopName": "Copper Store",
-            "representative_name": "John Mash",
-            "ur_id": "3",
-            "gender": "male",
-            "mobile": "7485963214",
-            "country_id": "1",
-            "address": "Ahmedabad",
-            "created_on": "2017-10-24 11:40:28"
-        },
-        {
-            "u_id": "8",
-            "email": "divya.ebiztrait@gmail.com",
-            "ShopName": "qa",
-            "representative_name": "ebizqa103",
-            "ur_id": "3",
-            "gender": "male",
-            "mobile": "4561278932",
-            "country_id": "4",
-            "address": "sxhsjhbjgkfcbk",
-            "created_on": "2017-10-31 00:58:28"
-        },
-        {
-            "u_id": "13",
-            "email": "deval.ebiztrait@gmail.com",
-            "ShopName": "Mark Bond",
-            "representative_name": "Joe Smith",
-            "ur_id": "3",
-            "gender": "male",
-            "mobile": "12345678",
-            "country_id": "5",
-            "address": "Shuwaikh",
-            "created_on": "2017-11-17 07:08:59"
-        },
-        {
-            "u_id": "14",
-            "email": "deval.ebiztrait+1@gmail.com",
-            "ShopName": "Mark Bond",
-            "representative_name": "Joe Smith",
-            "ur_id": "3",
-            "gender": "male",
-            "mobile": "12345678",
-            "country_id": "5",
-            "address": "Shuwaikh",
-            "created_on": "2017-fetchData11-17 07:10:38"
-        },
-        {
-            "u_id": "15",
-            "email": "deval.ebiztrait+2@gmail.com",
-            "ShopName": "Mark Smith",
-            "representative_name": "Joe Smith",
-            "ur_id": "3",
-            "gender": "male",
-            "mobile": "12345678",
-            "country_id": "5",
-            "address": "Shuwaikh",
-            "created_on": "2017-11-17 07:13:17"
-        },
-        {
-            "u_id": "18",
-            "email": "aiyub.ebiztrait@gmail.com",
-            "ShopName": "Laurel Lynch",
-            "representative_name": "Max Lynch",
-            "ur_id": "3",
-            "gender": "male",
-            "mobile": "21364578",
-            "country_id": "5",
-            "address": "B52 Kuwait Shopping Centre, Opp. Al Kaiyub Sports Academy",
-            "created_on": "2017-11-23 02:20:31"
-        },
-        {
-            "u_id": "19",
-            "email": "ankitago.ebiztrait@gmail.com",
-            "ShopName": "Ebiztrait",
-            "representative_name": "Ankita Gol",
-            "ur_id": "3",
-            "gender": "female",
-            "mobile": "1234567891",
-            "country_id": "1",
-            "address": "ahmedabad",
-            "created_on": "2017-11-23 06:56:49"
-        },
-        {
-            "u_id": "20",
-            "email": "ankitago2.ebiztrait@gmail.com",
-            "ShopName": "Ebiztrait",
-            "representative_name": "Ankita Gol",
-            "ur_id": "3",
-            "gender": "female",
-            "mobile": "1234567891",
-            "country_id": "1",
-            "address": "ahmedabad",
-            "created_on": "2017-11-23 06:59:12"
-        },
-        {
-            "u_id": "21",
-            "email": "ankitago9.ebiztrait@gmail.com",
-            "ShopName": "Ebiztrait",
-            "representative_name": "Ankita Gol",
-            "ur_id": "3",
-            "gender": "female",
-            "mobile": "1234567891",
-            "country_id": "1",
-            "address": "ahmedabad",
-            "created_on": "2017-11-23 07:00:07"
-        },
-        {
-            "u_id": "22",
-            "email": "ankitago6.ebiztrait@gmail.com",
-            "ShopName": "Ebiztrait",
-            "representative_name": "Ankita Gol",
-            "ur_id": "3",
-            "gender": "female",
-            "mobile": "1234567891",
-            "country_id": "1",
-            "address": "ahmedabad",
-            "created_on": "2017-11-23 07:00:47"
-        },
-        {
-            "u_id": "23",
-            "email": "ankitago62.ebiztrait@gmail.com",
-            "ShopName": "Ebiztrait",
-            "representative_name": "Ankita Gol",
-            "ur_id": "3",
-            "gender": "female",
-            "mobile": "1234567891",
-            "country_id": "1",
-            "address": "ahmedabad",
-            "created_on": "2017-11-23 07:01:06"
-        }
-    ];
-
-
 export default class MainView extends Component {
     constructor(props) {
         super(props); 
-        this.fetchAllShop = this.fetchAllShop.bind(this);       
+        this.fetchAllShop = this.fetchAllShop.bind(this); 
+        this.fetchData = this.fetchData.bind(this);       
+      
         this.state={ 
             dataSource: new ListView.DataSource({   rowHasChanged: (row1, row2) => row1 !== row2 }), 
             dataSource2: new ListView.DataSource({  rowHasChanged: (row1, row2) => row1 !== row2 }), 
             textInputValue: '',
+            shoperId : '',
             data : []
 
         }
     }
 
     componentDidMount(){
-        this.fetchData()
-        this.fetchAllShop()
+        this.fetchData();
+        this.fetchAllShop();
     }
 
     blur() {
@@ -237,7 +80,7 @@ export default class MainView extends Component {
 
     fetchData(){ 
         let formData = new FormData();
-        formData.append('u_id', String(1));
+        formData.append('u_id', String(2));
         formData.append('country', String(1));  
 
         const config = { 
@@ -252,6 +95,8 @@ export default class MainView extends Component {
         fetch(Utils.gurl()+"/productListView", config) 
         .then((response) => response.json())
         .then((responseData) => {
+                    // console.warn(JSON.stringify(responseData))
+
             this.setState({
                 dataSource: this.state.dataSource.cloneWithRows(responseData.data),
                 refreshing : false
@@ -263,8 +108,6 @@ export default class MainView extends Component {
     }
 
     render() {
-        console.warn(JSON.stringify(this.state.data))
-
         let listView = (<View></View>);
             listView = (
                 <ListView
@@ -280,29 +123,80 @@ export default class MainView extends Component {
             <ScrollView 
             contentContainerStyle={styles.contentContainer} 
             showsVerticalScrollIndicator={false}>
-                <View style={{ flexDirection : 'row', backgroundColor : '#ccc'}}>
-           <View style={styles.button,[{ width : width/2,justifyContent : "space-between", backgroundColor : '#fff'}]}> 
-                <ModalPicker
-                    data={this.state.data}
-                    initValue="Select something yummy!"
-                    onChange={(option)=>{ this.setState({textInputValue:option.ShopName})}}>
-                    <TextInput
-                        editable={false}
-                        placeholder="All Shop"
-                        underlineColorAndroid = 'transparent'
-                        value={this.state.textInputValue} />
-                        
-                </ModalPicker>
-            </View>
+                <View style={{ flexDirection : 'row'}}> 
+                    <View style={ styles.button,[{ 
+                        width : width/2, 
+                        justifyContent : "space-around", 
+                        backgroundColor : '#fff',
+                        padding : 2}]}> 
+                        <ModalPicker
+                            data={this.state.data}
+                            initValue="Select something yummy!"
+                            onChange={(option)=>{ this.setState({ 
+                                textInputValue:option.ShopName,
+                                shoperId : option.u_id
+                            })}}>
 
-                    <TouchableOpacity style={styles.button}>
-                    <Text>All Service</Text>
-                    </TouchableOpacity>
+                            <View style={{ 
+                                flex:1, 
+                                justifyContent : "space-around", 
+                                flexDirection: 'row', 
+                                borderWidth : 0.5, 
+                                borderColor: "#ccc", 
+                                alignItems: 'center'}}>
+                                
+                                <TextInput style={{ width : 150,height: 30 }}
+                                    editable={false}
+                                    placeholder="All Shop"
+                                    underlineColorAndroid = 'transparent'
+                                    value={this.state.textInputValue} />
+                                <Ionicons 
+                                name="md-arrow-dropdown" 
+                                size={20} 
+                                color="#87cefa" 
+                                />
+                            </View>
+                        </ModalPicker>
+                    </View>
+                    <View style={ styles.button,[{ 
+                        width : width/2, 
+                        justifyContent : "space-around", 
+                        backgroundColor : '#fff', 
+                        padding : 2}]}> 
+                        <ModalPicker
+                            data={this.state.data}
+                            initValue="Select something yummy!"
+                            onChange={(option)=>{ this.setState({ 
+                                textInputValue:option.ShopName,
+                                shoperId : option.u_id
+                            })}}>
+
+                            <View style={{ 
+                                flex:1, 
+                                justifyContent : "space-around", 
+                                flexDirection: 'row', 
+                                borderWidth : 0.5, 
+                                borderColor: "#ccc", 
+                                alignItems: 'center'}}>
+                                
+                                <TextInput style={{ width : 150,height: 30 }}
+                                    editable={false}
+                                    placeholder="All Service"
+                                    underlineColorAndroid = 'transparent'
+                                    value={this.state.textInputValue} />
+                                <Ionicons 
+                                name="md-arrow-dropdown" 
+                                size={20} 
+                                color="#87cefa" 
+                                />
+                            </View>
+                        </ModalPicker>
+                    </View>
                 </View>
                 <GetMarketing/>
                 <Text>Featured Item</Text>
                 {listView}
-                <Text>All Item</Text>
+                <Text style={{}}>All Item</Text>
                 <AllItem/>
             </ScrollView>
         );

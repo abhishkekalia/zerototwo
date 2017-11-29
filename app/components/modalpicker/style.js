@@ -62,7 +62,9 @@ export default StyleSheet.create({
     optionStyle: {
         padding: PADDING,
         borderBottomWidth: 1,
-        borderBottomColor: '#ccc'
+        borderBottomColor: '#ccc',
+        justifyContent : "space-between", 
+        flexDirection: 'row', 
     },
 
     optionTextStyle: {
@@ -80,5 +82,11 @@ export default StyleSheet.create({
     sectionTextStyle: {
         textAlign: 'center',
         fontSize: FONT_SIZE
-    }
+    },
+    checkbox: {
+        width: 24,
+        height: 24,
+        marginRight: 5,
+    },
+ 
 });

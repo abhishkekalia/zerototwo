@@ -42,7 +42,7 @@ class Menu extends React.Component {
                     <Zocial name='guest' color="#fff" size={15} />
                     </Text>
                     </View>
-                    <Text>guest</Text>
+                    <Text style={{ position: 'absolute' , paddingLeft : 60, paddingTop : 75, color:"#fff"}}>{identity.username}</Text>
                 </View>
                 
                 <View style={[styles.badge, styles.seprator]}> 
@@ -63,7 +63,7 @@ class Menu extends React.Component {
                             backgroundColor: 'orange'}}
                     />
                     <Text 
-                    onPress={Actions.home}
+                    onPress={Actions.notification}
 
                      style={{
                         fontSize: 12, 
@@ -82,14 +82,17 @@ class Menu extends React.Component {
                 style={[styles.item, styles.seprator]}>My Order</Text>
 
                 <Text
-                onPress={Actions.sync}
-                style={[styles.item, styles.seprator]}> Share With Friends</Text>
+                onPress={Actions.tabbar}
+                style={[styles.item, styles.seprator]}> tabbar</Text>
                  <Text
                 onPress={Actions.sync}
                 style={[styles.item, styles.seprator]}> Rate us on App Store</Text>    
                 <Text
+                onPress={Actions.marketing}
+                style={[styles.item, styles.seprator]}> Marketing</Text>
+                <Text
                 onPress={logout}
-                style={styles.item}> Marketing</Text>
+                style={styles.item}> logout</Text>
             </ScrollView>
         );
     }
