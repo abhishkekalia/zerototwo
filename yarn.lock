@@ -3017,6 +3017,10 @@ mobx@^3.3.1:
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/mobx/-/mobx-3.3.1.tgz#c38fc1a287a0dda3f5d4b85efe1137fedd9dcdf0"
 
+moment@2.x.x:
+  version "2.19.3"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.19.3.tgz#bdb99d270d6d7fda78cc0fbace855e27fe7da69f"
+
 morgan@~1.6.1:
   version "1.6.1"
   resolved "https://registry.yarnpkg.com/morgan/-/morgan-1.6.1.tgz#5fd818398c6819cba28a7cd6664f292fe1c0bbf2"
@@ -3622,6 +3626,12 @@ react-devtools-core@^2.5.0:
     shell-quote "^1.6.1"
     ws "^2.0.3"
 
+react-native-datepicker@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/react-native-datepicker/-/react-native-datepicker-1.6.0.tgz#3a40dc9b112023c49d60ba2a0789d440b7e3d97c"
+  dependencies:
+    moment "2.x.x"
+
 react-native-dismiss-keyboard@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/react-native-dismiss-keyboard/-/react-native-dismiss-keyboard-1.0.0.tgz#32886242b3f2317e121f3aeb9b0a585e2b879b49"
@@ -3704,6 +3714,10 @@ react-native-modal-picker@^0.0.16:
 react-native-picker-dropdown@^0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/react-native-picker-dropdown/-/react-native-picker-dropdown-0.0.1.tgz#e44e85c7d79b2276739cd9352882b4281360f456"
+
+react-native-progress-bar@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/react-native-progress-bar/-/react-native-progress-bar-0.1.2.tgz#2fbe32ed49d15e2a57a2b9d29b6d588a4fa1554e"
 
 react-native-radio-buttons@^1.0.0:
   version "1.0.0"

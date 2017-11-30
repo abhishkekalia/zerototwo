@@ -65,7 +65,8 @@ const Routes = ({loading, needSignIn}) => (
                     renderRightButton={() => <Ionicons name="filter" size={20} onPress={()=> Actions.filterBar()}/>}>
     	                
     	                <Stack key="root">
-    	                	<Scene key='loginPage' component={LoginPage} title='login' hideNavBar={true} initial={needSignIn} type={ActionConst.REPLACE} />
+       	                	<Scene key='landingpage' component={WelcomeScreen} initial={needSignIn}/>
+    	                	<Scene key='loginPage' component={LoginPage} title='login' hideNavBar={true}  type={ActionConst.REPLACE} />
     	                </Stack>
              					<Scene 
              						key="homePage" 

@@ -73,6 +73,10 @@ class Menu extends React.Component {
                </View>
 
                 <Text
+                onPress={Actions.homePage}
+                style={[styles.item, styles.seprator]}>Home</Text>
+
+                <Text
                 onPress={Actions.search}
                 style={[styles.item, styles.seprator]}>Contact Us</Text>
 

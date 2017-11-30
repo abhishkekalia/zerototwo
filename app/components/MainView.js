@@ -13,13 +13,14 @@ import {
 import { Actions } from 'react-native-router-flux';
 import IconBadge from 'react-native-icon-badge';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Utils from 'app/common/Utils';
 import GetMarketing from './GetMarketingad';
 import ModalPicker from './modalpicker';
 import AllItem from './AllItem';
 
 
-const { width } = Dimensions.get('window')
+const { width, height } = Dimensions.get('window')
 let index = 0;
 
 export default class MainView extends Component {
@@ -122,7 +123,8 @@ export default class MainView extends Component {
         return (
             <ScrollView 
             contentContainerStyle={styles.contentContainer} 
-            showsVerticalScrollIndicator={false}>
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="always">
                 <View style={{ flexDirection : 'row'}}> 
                     <View style={ styles.button,[{ 
                         width : width/2, 
@@ -145,7 +147,7 @@ export default class MainView extends Component {
                                 borderColor: "#ccc", 
                                 alignItems: 'center'}}>
                                 
-                                <TextInput style={{ width : 150,height: 30 }}
+                                <TextInput style={{ width : 150,height: 40 }}
                                     editable={false}
                                     placeholder="All Shop"
                                     underlineColorAndroid = 'transparent'
@@ -179,7 +181,7 @@ export default class MainView extends Component {
                                 borderColor: "#ccc", 
                                 alignItems: 'center'}}>
                                 
-                                <TextInput style={{ width : 150,height: 30 }}
+                                <TextInput style={{ width : 150,height: 40 }}
                                     editable={false}
                                     placeholder="All Service"
                                     underlineColorAndroid = 'transparent'
@@ -208,25 +210,31 @@ export default class MainView extends Component {
         
         return (
             <TouchableOpacity style={styles.row} onPress={Actions.deascriptionPage}> 
-                <IconBadge
-                    MainElement={ 
-                        <Image style={styles.thumb} 
-                            source={{ uri : data.productImage}}/>                        }
-                    BadgeElement={
-                      <Text style={{color:'#FFFFFF', fontSize: 10}}>{data.discount} %off</Text>
-                    }
-                    IconBadgeStyle={{
-                        width:50,
-                        height:16,
-                        top : 45,
-                        left: 0,
-                        backgroundColor: '#87cefa'}}/>
+                <View style={{flexDirection: 'row'}}>
+                    <IconBadge
+                        MainElement={ 
+                            <Image style={styles.thumb} 
+                                source={{ uri : data.productImage}}/>                        }
+                        BadgeElement={
+                          <Text style={{color:'#FFFFFF', fontSize: 10}}>{data.discount} %off</Text>
+                        }
+                        IconBadgeStyle={{
+                            width:50,
+                            height:16,
+                            top : height/5-10,
+                            left: 0,
+                            backgroundColor: '#87cefa'}}/>
+                            <EvilIcons style={ {left : width/3-40, position : 'absolute'}} name="heart" size={25} color="#87cefa"/>
+                </View>
+
                 <Text style={styles.name}>{data.product_name}</Text>
                 <Text style={styles.description}>{data.short_description}</Text>
                 <View style={{
                     flex: 0, 
                     flexDirection: 'row', 
-                    justifyContent: 'space-between',}}> 
+                    justifyContent: 'space-between',
+                    top : 5
+                }}> 
                     <Text style={styles.special_price}>{data.special_price}Aed</Text>
                     <Text style={{fontSize:10, color: color, textDecorationLine: textDecorationLine}}>{data.price}Aed</Text>
                 </View>
@@ -237,16 +245,18 @@ export default class MainView extends Component {
 
 var styles =StyleSheet.create({
     list: {
-        borderWidth: 1, 
-        borderColor: '#CCC',
+        // borderWidth: 1, 
+        // borderColor: '#CCC',
         flexDirection: 'row',
         flexWrap: 'wrap'
     },
     name : {
-        fontSize : 10
+        fontSize : 10,
+        top : 5
     },
     description : {
-        fontSize : 7
+        fontSize : 7,
+        top : 5
     },
     special_price : {
         fontSize : 10,
@@ -254,10 +264,9 @@ var styles =StyleSheet.create({
     },
 
     row: {
-        // flex: 1,
         flexDirection: 'column',
         justifyContent: 'space-between',
-
+        width : width/3 -7,
         padding: 5,
         margin: 3,
         borderWidth: 1,
@@ -273,8 +282,9 @@ var styles =StyleSheet.create({
     },
 
     thumb: {
-        width: 60,
-        height: 60
+        width: width/3-20,
+        height: height/5,
+        // position : "absolute"
     },
 
     text: {

@@ -63,13 +63,13 @@ export default class GetMarketing extends Component {
                 automaticallyAdjustContentInsets={true}
                 removeClippedSubviews={true}
                 enableEmptySections={true}
-                showsVerticalScrollIndicator      = {false}
-                alwaysBounceHorizontal            = {true}
-                bouncesZoom                       = {false}                
+                showsVerticalScrollIndicator = {false}
+                alwaysBounceHorizontal= {true}
+                bouncesZoom={false}                
                 />
             );
         return (
-        <View style={{ borderWidth: 1, borderColor: '#CCC'}}>{listView}</View>
+        <View style={{ borderBottomWidth: 1, borderColor: '#CCC'}}>{listView}</View>
         );
     }
 
@@ -79,7 +79,6 @@ export default class GetMarketing extends Component {
                     uri : data.productImage })}> 
                         <Image style={styles.thumb} 
                             source={{ uri : data.productImage}}/>
-              
             </TouchableOpacity>
         );
     }
@@ -87,13 +86,13 @@ export default class GetMarketing extends Component {
 
 var styles =StyleSheet.create({
     list: {
-         flex: 1,
-  justifyContent: 'flex-end',
+        flex: 1,
+        justifyContent: 'flex-start',
         flexDirection: 'row',
         alignItems: 'center',
         },
     row: {
-        flex: 1,
+        // flex: 1,
         // borderRadius : 40,
         flexDirection: 'column',
         justifyContent: 'space-between',

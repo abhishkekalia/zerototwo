@@ -3,15 +3,11 @@ import React from 'react'
 import { Actions } from 'react-native-router-flux'
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import Octicons from 'react-native-vector-icons/Octicons';
 
 
 
 export default class CustomGenNavBar extends React.Component {
-
-  // constructor(props) {
-  //   super(props)
-  // }
-
   _renderLeft() {
     if (Actions.currentScene === 'homePage') {
       return (
@@ -47,12 +43,12 @@ export default class CustomGenNavBar extends React.Component {
         <TouchableOpacity
           onPress={() => console.log('Share')}
           style={{ paddingRight: 10}}>
-          <EvilIcons name="" size={25} color="fff" />
+          <Octicons name="settings" size={25} color="#fff" />
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => console.log('Search')}
           style={{ paddingRight: 10 }}>
-          <EvilIcons name="" size={25} color="fff" />
+          <Octicons name="settings" size={25} color="fff" />
         </TouchableOpacity>
       </View>
     )

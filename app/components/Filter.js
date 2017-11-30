@@ -91,7 +91,7 @@ export default class Filter extends Component {
                     </View>
                     <View style={{flex : 1, padding : 10}}>
                         <TextInput
-                        style={{height: 30, borderWidth : 0.5, borderColor : '#ccc',borderRadius : 10}}
+                        style={{height: 40, borderWidth : 0.5, borderColor : '#ccc',borderRadius : 10}}
                         placeholder="Search by Category"
                         underlineColorAndroid = 'transparent'
                         onChangeText={(search) => this.setState({search})}/>

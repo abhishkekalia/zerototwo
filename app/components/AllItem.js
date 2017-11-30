@@ -2,7 +2,8 @@ import React, { Component ,PropTypes } from 'react';
 import {
     ListView,
     TouchableOpacity, 
-    StyleSheet, 
+    StyleSheet,
+    Dimensions, 
     Text, 
     View,
     Image 
@@ -10,6 +11,7 @@ import {
 import { Actions } from 'react-native-router-flux';
 import IconBadge from 'react-native-icon-badge';
 import Utils from 'app/common/Utils';
+const { width, height } = Dimensions.get('window')
 
 
 export default class AllItem extends Component {
@@ -100,7 +102,7 @@ export default class AllItem extends Component {
                     IconBadgeStyle={{
                         width:50,
                         height:16,
-                        top : 45,
+                        top : height/5-10,
                         left: 0,
                         backgroundColor: '#87cefa'}}/>
                 <Text style={styles.name}>{data.product_name}</Text>
@@ -108,7 +110,8 @@ export default class AllItem extends Component {
                 <View style={{
                     flex: 0, 
                     flexDirection: 'row', 
-                    justifyContent: 'space-between',}}> 
+                    justifyContent: 'space-between',
+                    top : 5}}> 
                     <Text style={styles.special_price}>{data.special_price}Aed</Text>
                     <Text style={{fontSize:10, color: color, textDecorationLine: textDecorationLine}}>{data.price}Aed</Text>
                 </View>
@@ -119,16 +122,19 @@ export default class AllItem extends Component {
 
 var styles =StyleSheet.create({
     list: {
-        borderWidth: 1, 
-        borderColor: '#CCC',
+        // borderWidth: 1, 
+        // borderColor: '#CCC',
         flexDirection: 'row',
         flexWrap: 'wrap'
     },
     name : {
-        fontSize : 10
+        fontSize : 10,
+        top : 5
+
     },
     description : {
-        fontSize : 7
+        fontSize : 7,
+        top : 5
     },
     special_price : {
         fontSize : 10,
@@ -139,6 +145,7 @@ var styles =StyleSheet.create({
         // flex: 1,
         flexDirection: 'column',
         justifyContent: 'space-between',
+        width : width/3 -7,
 
         padding: 5,
         margin: 3,
@@ -147,8 +154,8 @@ var styles =StyleSheet.create({
     },
 
     thumb: {
-        width: 60,
-        height: 60
+        width: width/3-20,
+        height: height/5
     },
 
     text: {

@@ -5,7 +5,8 @@ import {
   Image,
   Dimensions,
   ScrollView,
-  TouchableOpacity
+  TouchableOpacity,
+  TextInput
 } from 'react-native';
 
 import Swiper from 'react-native-swiper';
@@ -13,27 +14,11 @@ import { BubblesLoader } from 'react-native-indicator';
 import Ionicons from 'react-native-vector-icons/MaterialIcons';
 import {Button} from "app/common/components";
 import Utils from 'app/common/Utils';
+import Slider from './slider'
+import DatePicker from 'react-native-datepicker';
+import AllItem from './AllItem';
 
-const { width } = Dimensions.get('window')
-const loading = require('../images/loading.gif')
-
-const Slide = props => { 
-    return ( 
-        <View style={styles.slide}>
-            <Image onLoad={props.loadHandle.bind(null, props.i)}  
-            style={styles.image} 
-            source={{uri: props.uri}} />
-            {
-              !props.loaded && <View style={styles.loadingView}> 
-              <BubblesLoader 
-                color= {'#6a5acd'} 
-                size={40} 
-                dotRadius={10} />
-            </View>
-        }
-        </View>
-    )
-}
+const {width,height} = Dimensions.get('window');
 
 export default class ProductDescription extends Component {
     constructor (props) { 
@@ -41,8 +26,10 @@ export default class ProductDescription extends Component {
         this.state = { 
             imgList : [] ,
             data : [],
-            loadQueue: [0, 0, 0, 0],
-            count : 0 
+            count : 1,
+            date_in: new Date(), 
+            date_out:new Date(),
+            address : '' 
         }
         this.loadHandle = this.loadHandle.bind(this)
     }
@@ -56,6 +43,15 @@ export default class ProductDescription extends Component {
     }
     componentDidMount(){
         this.fetchData()
+    }
+    async openAndroidDatePicker() { 
+        try { 
+            const {action, year, month, day} = await DatePickerAndroid.open({ 
+                date: new Date() 
+            }); 
+        } catch ({code, message}) { 
+            console.warn('Cannot open date picker', message); 
+        }
     }
 
     fetchData(){ 
@@ -92,22 +88,19 @@ export default class ProductDescription extends Component {
     }
     
     render () { 
+        const { date_in, count } = this.state;
         let color = this.state.data.special_price ? '#C5C8C9' : '#000';
         let textDecorationLine = this.state.data.special_price ? 'line-through' : 'none';
         let colorOffer = this.state.data.special_price ? 'orange' : '#fff'; 
-
+        if(count <= 0) { console.warn(count); }
         return ( 
-            <ScrollView contentContainerStyle={[{flex: 1}]}>
-                <Swiper loadMinimal loadMinimalSize={1} style={styles.wrapper} loop={false}>
-                  {
-                    this.state.imgList.map((item, i) => <Slide
-                      loadHandle={this.loadHandle}
-                      loaded={!!this.state.loadQueue[i]}
-                      uri={item}
-                      i={i}
-                      key={i} />)
-                  }
-                </Swiper>
+            <ScrollView 
+                keyboardShouldPersistTaps="always"
+                showsVerticalScrollIndicator={false}>
+                <View style={{ height : height/1.5}}>
+                <Slider imgList={this.state.imgList}/>
+                </View>
+
                 <View style={{ 
                     flex: 1,
                     flexDirection: 'column',
@@ -157,15 +150,83 @@ export default class ProductDescription extends Component {
                             justifyContent: 'center', 
                             alignItems: 'center'
                         }}>
-                        <TouchableOpacity  style={styles.qtybutton}> 
+                        <TouchableOpacity  style={styles.qtybutton} onPress={()=> this.setState({count: count-1})}> 
                             <Text style={styles.text}>-</Text>
                         </TouchableOpacity>
-                        <Text style={styles.qtybutton}>{this.state.count}</Text>
-                        <TouchableOpacity  style={styles.qtybutton}> 
+                        <Text style={styles.qtybutton}>{count}</Text>
+                        <TouchableOpacity  style={styles.qtybutton} onPress={()=> this.setState({count: count+1})}> 
                             <Text style={styles.text}>+</Text>
                         </TouchableOpacity>
                         </View>
+                    <View style= {{ flexDirection :"row", justifyContent: "space-between", padding : 5}}>
+                        <Ionicons name ="date-range" size={25} style={{ padding :5}} color="#87cefa"/>
+                        <DatePicker
+                            style ={{ width : width-50}}
+                            date={this.state.date_in}
+                            mode="date"
+                            placeholder="hello"
+                            format="YYYY-MM-DD"
+                            minDate="2016-05-01"
+                            maxDate={date_in}
+                            showIcon={false}
+                            customStyles={{
+                                dateInput: {
+                                    width : width, 
+                                    borderWidth : 0.5, 
+                                    borderColor: "#ccc", 
+                                    alignItems : 'flex-start',
+                                },
+                            }}
+                        onDateChange={(date_in) => {this.setState({date_in: date_in});}}/>
+                        </View>
+                        
+                        <View style= {{ flexDirection :"row", justifyContent: "space-between", padding : 5}}>
+                            <Ionicons name ="place" size={25} style={{ padding :5}} color="#87cefa"/>
+                            <TextInput style={{ height: 40 ,  width : width-50 ,borderWidth : 0.5, borderColor: "#ccc"}}
+                                placeholder="Delivery Address"
+                                underlineColorAndroid = 'transparent'
+                                value={this.state.address} />
+                        </View>
+                        <View style={{ borderColor :"#ccc", borderWidth:0.5, paddingLeft : 20, paddingRight:20}}>
+                            <Text style={{ height : 40 }}> Product info & care</Text>
+                            <Text> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                                consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+                                cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+                                proident, sunt in culpa qui officia deserunt mollit anim id est laborum. 
+                            </Text>
+                            <View style={{ flexDirection: 'column', paddingTop : 10}}>
+                                <View style={{ flexDirection: 'row'}}>
+                                <Text style={ styles.description}>Fabric</Text><Text>Cotton</Text>
+                                </View>
+                                <View style={{ flexDirection: 'row'}}>
+                                <Text style={ styles.description}>Length</Text><Text>Cotton</Text>
+                                </View>
+                                <View style={{ flexDirection: 'row'}}>
+                                <Text style={ styles.description}>Sleeves</Text><Text>Cotton</Text>
+                                </View>
+                                <View style={{ flexDirection: 'row'}}>
+                                <Text style={ styles.description}>Neck</Text><Text>Cotton</Text>
+                                </View>
+                                <View style={{ flexDirection: 'row'}}>
+                                <Text style={ styles.description}>Fit</Text><Text>Cotton</Text>
+                                </View>
+                                <View style={{ flexDirection: 'row'}}>
+                                <Text style={ styles.description}>Wash</Text><Text>Cotton</Text>
+                                </View>
+                                <View style={{ flexDirection: 'row'}}>
+                                <Text style={ styles.description}>Color</Text><Text>Cotton</Text>
+                                </View>
+                                <View style={{ flexDirection: 'row'}}>
+                                <Text style={ styles.description}>Sku</Text><Text>Cotton</Text>
+                                </View>
+                            </View>
+                        </View>
+                        <Text style={{padding:10}}>more Product by ZeroToTwo</Text>
+                        <AllItem/>
                     </View>
+                    
                 </View>
             </ScrollView>
         )
@@ -174,8 +235,8 @@ export default class ProductDescription extends Component {
 const styles = {
     contentContainer: { 
     },
-    wrapper: {
-
+    description: {
+width : width/3
     },
     qtybutton: {
         width : 40,
