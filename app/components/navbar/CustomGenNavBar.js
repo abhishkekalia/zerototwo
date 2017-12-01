@@ -45,11 +45,7 @@ export default class CustomGenNavBar extends React.Component {
           style={{ paddingRight: 10}}>
           <Octicons name="settings" size={25} color="#fff" />
         </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => console.log('Search')}
-          style={{ paddingRight: 10 }}>
-          <Octicons name="settings" size={25} color="fff" />
-        </TouchableOpacity>
+        
       </View>
     )
   }

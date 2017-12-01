@@ -210,7 +210,7 @@ export default class MainView extends Component {
         
         return (
             <TouchableOpacity style={styles.row} onPress={Actions.deascriptionPage}> 
-                <View style={{flexDirection: 'row'}}>
+                <View style={{flexDirection: 'row', justifyContent: "center"}}>
                     <IconBadge
                         MainElement={ 
                             <Image style={styles.thumb} 
@@ -270,7 +270,8 @@ var styles =StyleSheet.create({
         padding: 5,
         margin: 3,
         borderWidth: 1,
-        borderColor: '#CCC'
+        borderColor: '#CCC',
+        borderRadius : 5
     },
     button: {
         width: width/2,

@@ -44,7 +44,6 @@ export default class WelcomeScreen extends Component {
         })
         .then((response) => response.json())
         .then((responseData) => { 
-            // console.warn(JSON.stringify(responseData.response));
             this.setState({
                 userTypes: responseData.response.data,
                  loaded: true
@@ -84,7 +83,9 @@ export default class WelcomeScreen extends Component {
                             mode="dropdown"
                             selectedValue={this.state.selectedUserType}
                             onValueChange={(itemValue, itemIndex) => 
-                              this.setState({selectedUserType: itemValue})}> 
+                              this.setState({selectedUserType: itemValue})}>
+                              <Picker.Item label="Select country" value="" /> 
+ 
                               {this.loadUserTypes()}
                             </Picker>
                         </View>

@@ -13,17 +13,20 @@ import {
 } from 'react-native';
 import Swipeout from 'react-native-swipeout';
 import Utils from 'app/common/Utils';
-import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
+import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 const { width, height } = Dimensions.get('window');
 
-export default class WishList extends Component {
+export default class Shopingcart extends Component {
     constructor(props) { 
         super(props); 
         const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}); 
         this.state = { 
-            dataSource: ds.cloneWithRows(['row 1', 'row 2']), 
+            dataSource: ds.cloneWithRows(['row 1', 'row 2']),
+            itemcount : '',
+            totalamount : '',
+            subtotalamount : '', 
             Quentity : 0,
         }; 
     } 
@@ -45,12 +48,14 @@ export default class WishList extends Component {
             body: formData,
         } 
 
-        fetch(Utils.gurl()+"/wishlistDetail", config) 
+        fetch("http://solutiontrackers.com/dev-a/zerototwo/index.php/Webservice/cartList", config) 
         .then((response) => response.json())
-        .then((responseData) => {
-
+        .then((responseData) => { 
             this.setState({
                 dataSource: this.state.dataSource.cloneWithRows(responseData.data),
+                itemcount : responseData.itemcount,    
+                totalamount : responseData.totalamount,    
+                subtotalamount : responseData.subtotalamount, 
                 refreshing : false
         });
         }).done();
@@ -68,6 +73,7 @@ export default class WishList extends Component {
     } 
 
     render() {
+        const { itemcount, totalamount, subtotalamount } = this.state;
         let listView = (<View></View>);
             listView = (
                 <ListView
@@ -80,8 +86,63 @@ export default class WishList extends Component {
                 />
             );
         return (
-        <View>
-        {listView}
+        <View style={{flex: 1, flexDirection: 'column'}}>
+            <View 
+                style={{ 
+                    flexDirection : "row", 
+                    justifyContent: "space-between", 
+                    padding : 5,
+                    paddingBottom : 0,
+                    alignItems:'center', 
+                    flex : 0}}> 
+                <Text>Items ({itemcount})</Text>
+                <Text>Total : ${totalamount}</Text>
+            </View>
+            {listView}
+            <View 
+                style={{ 
+                    flexDirection : "column", 
+                    // justifyContent: "space-around", 
+                    // alignItems:'center', 
+                    // flex : 0
+                }}> 
+                <View 
+                    style={{ 
+                        flexDirection : "row", 
+                        justifyContent: "space-between", 
+                        alignItems:'center', 
+                        padding : 5, 
+                        flex : 0}}> 
+                <Text>Items({itemcount})</Text>
+                <Text> $ {totalamount}</Text>
+                </View>
+                <View 
+                    style={{ 
+                        flexDirection : "row", 
+                        justifyContent: "space-between", 
+                        alignItems:'center',
+                        padding : 5, 
+                        flex : 0}}> 
+                <Text style={{ color : "#87cefa"}} >Cart SubTotal</Text>
+                <Text style={{ color : "#87cefa"}}> $ {subtotalamount}</Text>
+                </View>
+            </View>
+
+        <View style={{ flexDirection : 'row', justifyContent : 'space-around'}}>
+                    <TouchableHighlight 
+                    underlayColor ={"#fff"} 
+                    style={[styles.shoping]} 
+                    onPress={()=>console.log("continoue shoping")}>
+                    <Text>Continoue Shoping</Text>
+                    </TouchableHighlight>
+
+                    <TouchableHighlight 
+                    underlayColor ={"#fff"} 
+                    style={[styles.checkout]} 
+                    onPress={()=> console.log("checkout")}>
+                    <Text>Proced to Checkout</Text>
+                    </TouchableHighlight>
+                </View>
         </View>
         );
     }
@@ -109,18 +170,11 @@ export default class WishList extends Component {
                 borderColor : "#ccc", 
                 borderRadius : 5, 
             }}>
-                <Swipeout right={swipeBtns}
-                    autoClose={true}
-                    backgroundColor= 'transparent'> 
-                    
                         <View style={{ 
                             flexDirection: 'row', 
                             // justifyContent : 'space-around', 
                             backgroundColor : "#fff"}}>
                             
-                            <Image style={[styles.thumb, {margin: 10}]} 
-                            source={{ uri : data.image}}/>
-    
                                 <View style={{flexDirection: 'column', justifyContent : 'space-between'}}>  
                                     <TouchableHighlight
                                         underlayColor='transparent'
@@ -161,16 +215,15 @@ export default class WishList extends Component {
                                     </View>
                                 </View>
                                 
-                </Swipeout>
                 
                 <View style={styles.bottom}>
                         <TouchableOpacity style={[styles.wishbutton, {flexDirection : 'row', justifyContent: "center"}]}>
-                        <SimpleLineIcons name="share-alt" size={20} color="#a52a2a"/>
-                            <Text style={{ left : 5}}>Share WishList</Text>
+                        <Entypo name="cross" size={20} color="#87cefa"/>
+                            <Text style={{ left : 5}}>Remove</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={[styles.wishbutton, {flexDirection : 'row', justifyContent: "center"}]}>
-                            <FontAwesome name="opencart" size={20} color="#a52a2a"/> 
-                            <Text style={{ left :5}}>Move to Cart</Text>
+                            <Entypo name="heart-outlined" size={20} color="#87cefa"/> 
+                            <Text style={{ left :5}}>Add To wishlist</Text>
                         </TouchableOpacity>
                 </View>
             </View>
@@ -259,5 +312,17 @@ const styles = StyleSheet.create ({
         backgroundColor : '#fff',
         minHeight : 500,
         fontWeight : 'bold'
-    }
+    },
+    shoping : {
+        width : width/2,
+        backgroundColor : "#a52a2a",
+        alignItems : 'center',
+        padding : 10
+    },
+    checkout : {
+        width : width/2,
+        backgroundColor : "#87cefa",
+        alignItems : 'center',
+        padding : 10
+     }
 })

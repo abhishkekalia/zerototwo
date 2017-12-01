@@ -7,4 +7,4 @@ import wishList from './app/components/wish/wishList'
 
 // import Login from "./app/auth/components/Login";
 
-AppRegistry.registerComponent('AwesomeApp', () => wishList);
+AppRegistry.registerComponent('AwesomeApp', () => Root);

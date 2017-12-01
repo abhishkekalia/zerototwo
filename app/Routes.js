@@ -24,6 +24,9 @@ import {Loader} from "./common/components";
 import Menu from './components/menu/MenuContainer';
 import Ionicons from 'react-native-vector-icons/Feather';
 import wishList from './components/wish/wishList'
+import Shopingcart from './components/wish/Shopingcart'
+
+
 import CustomNavBar from "./components/navbar/CustomNavBar";
 import CustomGenNavBar from "./components/navbar/CustomGenNavBar";
 
@@ -59,28 +62,87 @@ const Routes = ({loading, needSignIn}) => (
     		getSceneStyle={getSceneStyle}
     		>
     			<Drawer 
-                    hideNavBar 
-                    key="home" 
-                    contentComponent={Menu}
-                    renderRightButton={() => <Ionicons name="filter" size={20} onPress={()=> Actions.filterBar()}/>}>
-    	                
-    	                <Stack key="root">
-       	                	<Scene key='landingpage' component={WelcomeScreen} initial={needSignIn}/>
+		            hideNavBar 
+       				initial={!needSignIn} 
+		            key="zerototwo" 
+		            contentComponent={Menu}
+		            renderRightButton={() => <Ionicons name="filter" size={20} onPress={()=> Actions.filterBar()}/>}>
+    	                <Stack key="root" >
+       	                	<Scene key='landingpage' component={WelcomeScreen} hideNavBar={true} initial={needSignIn}/>
     	                	<Scene key='loginPage' component={LoginPage} title='login' hideNavBar={true}  type={ActionConst.REPLACE} />
     	                </Stack>
-             					<Scene 
-             						key="homePage" 
-             						titleStyle={{alignSelf: 'center'}} 
-             						navigationBarStyle={{ backgroundColor: '#87cefa' }} 
-             						initial={!needSignIn} 
-             						component={MainView} 
-             						title="Home" 
-             						type="replace"/>
+            	    	
+            	    	
+		                    <Tabs 
+        	        			key="tabbar"
+                				swipeEnabled
+                				initial={!needSignIn}
+                				showLabel={false}
+                				tabBarStyle={styles.tabBarStyle}
+                				tabBarPosition={'bottom'}
+                				activeBackgroundColor='#fff' 
+                				inactiveBackgroundColor='#fff'
+                				// inactiveBackgroundColor="rgba(255, 0, 0, 0.5)"
+                				>
 
+                				<Stack
+                    				key="Home"
+                    				title="Home"
+                    				icon={TabIcon}
+                    				 iconName="home"
+                    				navigationBarStyle={{ backgroundColor: '#87cefa' }}
+                    				titleStyle={{ color: 'white', alignSelf: 'center' }}>
+             						
+             						<Scene 
+             							key="homePage" 
+             							titleStyle={{alignSelf: 'center'}} 
+             							component={MainView} 
+             							title="Home" 
+             							type="replace"/>
+             					</Stack>
+                   				<Stack
+                    				key="wish"
+                    				title="wish"
+                    				icon={TabIcon}
+                    				iconName="heart"
+                    				navigationBarStyle={{ backgroundColor: '#87cefa' }}>
+
+             						<Scene 
+             							key="wish"
+             							titleStyle={{alignSelf: 'center'}} 
+             							navigationBarStyle={{ backgroundColor: '#87cefa' }} 
+             							component={wishList} 
+             							title="WishList"/>
+             					</Stack>
+                   				<Stack
+                    				key="Cart"
+                    				title="Cart"
+                    				icon={TabIcon}
+                    				iconName="opencart"
+                    				navigationBarStyle={{ backgroundColor: '#87cefa' }}>
+
+             						<Scene 
+             							key="shopingCart"
+             							titleStyle={{alignSelf: 'center'}} 
+             							navigationBarStyle={{ backgroundColor: '#87cefa' }} 
+             							component={Shopingcart} 
+             							title="Cart"/>
+             					</Stack>
+                   				<Stack
+                    				key="profile"
+                    				title="Profile"
+                    				icon={TabIcon}
+                    				iconName="users"
+                    				navigationBarStyle={{ backgroundColor: '#87cefa' }}>
+             					
              					<Scene 
              						key="profilePage" 
              						component={ProfilePage} 
              						title="Profile"/>
+             					</Stack>
+             				</Tabs>
+
+
              					<Scene 
              						key="registerPage" 
              						component={Register} 
@@ -109,17 +171,20 @@ const Routes = ({loading, needSignIn}) => (
                					 	<Scene key="timelineStatus" component={Timeline} /> 
                                 </Stack>
 
-                                <Stack key="filterBar" hideTabBar titleStyle={{alignSelf: 'center'}}>
-  		          				<Scene
-                				key="filter"
-                				title="filter"
-                				navBar={CustomNavBar}
-                				component={Filter}
-                				back/>
+                                <Stack 
+                                	key="filterBar" 
+                                	hideTabBar={true} 
+                                	titleStyle={{alignSelf: 'center'}}>
+  		          					<Scene
+                						key="filter"
+                						title="filter"
+                						navBar={CustomNavBar}
+                						component={Filter}
+                						back/>
         	        			</Stack>
         	        			
         	        			<Tabs 
-        	        			key="tabbar"
+        	        			key="dfsds"
                 				swipeEnabled
                 				showLabel={false}
                 				tabBarStyle={styles.tabBarStyle}
@@ -225,3 +290,4 @@ const styles = StyleSheet.create({
   },
 });
 export default connect(mapStateToProps)(Routes);
+
