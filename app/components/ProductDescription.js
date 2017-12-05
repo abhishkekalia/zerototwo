@@ -69,7 +69,7 @@ export default class ProductDescription extends Component {
             body: formData,
         }
         
-        fetch(Utils.gurl()+"/productDetailView", config) 
+        fetch(Utils.murl('productDetailView'), config) 
         .then((response) => response.json())
         .then((responseData) => {
             this.setState({ 

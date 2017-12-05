@@ -32,9 +32,12 @@ import CustomGenNavBar from "./components/navbar/CustomGenNavBar";
 
 import TabIcon from './components/TabIcon';
 import WelcomeScreen from './components/WelcomeScreen';
+import AddressBook from './components/Addressbook';
 import MainView from './components/MainView';
 import ProductDescription from './components/ProductDescription';
+import Newaddress from './components/Newaddress';
 import Timeline from "./components/timeline";
+import Settings from "./components/settings";
 
 import Filter from './components/Filter';
 
@@ -59,20 +62,22 @@ const Routes = ({loading, needSignIn}) => (
 		<Loader/> :
 			<Router 
 			createReducer={reducerCreate}
-    		getSceneStyle={getSceneStyle}
-    		>
-    			<Drawer 
-		            hideNavBar 
-       				initial={!needSignIn} 
-		            key="zerototwo" 
-		            contentComponent={Menu}
+    		getSceneStyle={getSceneStyle}>
+                          <Scene key="root" 
+                          drawer ={true}
+                          contentComponent={Menu} 
+                          initial={true} 
+                          hideNavBar={true} 
+       				// initial={!needSignIn} 
+		            // key="zerototwo" 
+		            // contentComponent={Menu}
 		            renderRightButton={() => <Ionicons name="filter" size={20} onPress={()=> Actions.filterBar()}/>}>
-    	                <Stack key="root" >
+
+    	                <Stack key="root" drawer={false} >
        	                	<Scene key='landingpage' component={WelcomeScreen} hideNavBar={true} initial={needSignIn}/>
     	                	<Scene key='loginPage' component={LoginPage} title='login' hideNavBar={true}  type={ActionConst.REPLACE} />
     	                </Stack>
-            	    	
-            	    	
+
 		                    <Tabs 
         	        			key="tabbar"
                 				swipeEnabled
@@ -148,6 +153,12 @@ const Routes = ({loading, needSignIn}) => (
              						component={Register} 
              						title="Registaration" 
 			          				navBar={CustomGenNavBar} />
+             					<Scene 
+             						key="addressbook" 
+             						component={AddressBook} 
+             						title="Addressbook" 
+             						hideNavBar={true}/> 
+
 			          			<Scene 
              						key="deascriptionPage" 
              						component={ProductDescription} 
@@ -159,11 +170,23 @@ const Routes = ({loading, needSignIn}) => (
                                 	component={ProfilePage} 
                                 	title="Profile"/> 
 
+                                <Scene 
+                                	key="newaddress" 
+                                	component={Newaddress} 
+                                	title="Newaddress"
+                                	hideNavBar={true}/>
+                                <Scene 
+                                    key="settings" 
+                                    component={Settings} 
+                                    title="setting"
+                                    hideNavBar={true}/> 
+
 
              					
                                 <Stack
 	               				back
 					            backTitle="Back"
+					            hideNavBar={true}
 					            duration={0}
                                 key="timeLine"
                                 titleStyle={{ color: 'black', alignSelf: 'center' }}
@@ -175,98 +198,17 @@ const Routes = ({loading, needSignIn}) => (
                                 	key="filterBar" 
                                 	hideTabBar={true} 
                                 	titleStyle={{alignSelf: 'center'}}>
-  		          					<Scene
-                						key="filter"
-                						title="filter"
-                						navBar={CustomNavBar}
-                						component={Filter}
-                						back/>
+  		          				<Scene
+                					key="filter"
+                					title="filter"
+                					navBar={CustomNavBar}
+                					component={Filter}
+                					back/>
         	        			</Stack>
-        	        			
-        	        			<Tabs 
-        	        			key="dfsds"
-                				swipeEnabled
-                				showLabel={false}
-                				tabBarStyle={styles.tabBarStyle}
-                				tabBarPosition={'bottom'}
-                				activeBackgroundColor="white"
-                				inactiveBackgroundColor="rgba(255, 0, 0, 0.5)"> 
-
-                					<Stack
-                    				key="tab_1"
-                    				title="Tab #1"
-                    					tabBarLabel="TAB #1"
-                    					inactiveBackgroundColor="#FFF"
-                    					activeBackgroundColor="#DDD"
-                    					icon={TabIcon}
-                    					navigationBarStyle={{ backgroundColor: 'green' }}
-                    					titleStyle={{ color: 'white', alignSelf: 'center' }}>
-                    						
-                    						<Scene
-                    						
-                    						  key="tab1_1"
-                    						
-                    						  component={wishList}
-                    						
-                    						  title="Tab #1_1"
-                    						
-                    						  onRight={() => alert('Right button')}
-                    						
-                    						  rightTitle="Right"/>
-
-                    						<Scene
-                    						  key="tab1_2"
-                    						  component={wishList}
-                    						  title="Tab #1_2"
-                    						  back
-                    						  titleStyle={{ color: 'black', alignSelf: 'center' }}
-                    						/>
-						                  </Stack>
-						
-						                  <Stack
-						                    key="tab_2"
-						                    title="Tab #2"
-						                    icon={TabIcon}
-						                    initial
-						                  >
-						                    <Scene
-						                      key="tab_2_1"
-						                      component={wishList}
-						                      title="Tab #2_1"
-						                      renderRightButton={() => <Text>Right</Text>}
-						                    />
-						                    <Scene
-						                      key="tab_2_2"
-						                      component={wishList}
-						                      title="Tab #2_2"
-						                      onBack={() => alert('onBack button!')}
-						                      hideDrawerButton
-						                      backTitle="Back!"
-						                      panHandlers={null}
-						                    />
-						                  </Stack>
-						
-						                  <Stack key="tab_3">
-						                    <Scene
-						                      key="tab_3_1"
-						                      component={wishList}
-						                      title="Tab #3"
-						                      icon={TabIcon}
-						                      rightTitle="Right3"
-						                      onRight={() => { }}
-						                    />
-						                  </Stack>
-						                  <Stack key="tab_4">
-						                    <Scene key="tab_4_1" component={wishList} title="Tab #4" hideNavBar icon={TabIcon} />
-						                  </Stack>
-						                  <Stack key="tab_5">
-						                    <Scene key="tab_5_1" component={wishList} title="Tab #5" icon={TabIcon} />
-						                  </Stack>
-						                </Tabs>
 
 
 
-                				</Drawer>
+                				</Scene>
           	</Router>
         );
 

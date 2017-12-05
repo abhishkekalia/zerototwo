@@ -36,7 +36,7 @@ export default class WelcomeScreen extends Component {
     }
     fetchData(){
         const { container_id, type} = this.state; 
-        fetch(Utils.gurl()+'/countryList',{
+        fetch(Utils.murl('countryList'),{
              method: "GET", headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
@@ -68,7 +68,7 @@ export default class WelcomeScreen extends Component {
 
     render(){ 
         const { deliveryarea, selectedUserType } = this.state
-        if (deliveryarea.length && deliveryarea.length) { 
+        if (deliveryarea.length && selectedUserType.length ) { 
             Actions.loginPage();
         }
         if (!this.state.loaded) {
@@ -79,33 +79,33 @@ export default class WelcomeScreen extends Component {
                 <View style={styles.row}>
                     <Image style={styles.countryIcon} source={require('../images/_Select_Country-128.png')} />
         
-                            <Picker style={{width: width/1.3, height: 40}}
+                        <Picker style={{width: width/1.3, height: 40}}
                             mode="dropdown"
                             selectedValue={this.state.selectedUserType}
                             onValueChange={(itemValue, itemIndex) => 
-                              this.setState({selectedUserType: itemValue})}>
-                              <Picker.Item label="Select country" value="" /> 
- 
-                              {this.loadUserTypes()}
+                                this.setState({selectedUserType: itemValue})}>
+                                
+                                <Picker.Item label="Select country" value="" /> 
+                               {this.loadUserTypes()}
                             </Picker>
-                        </View>
-                        <View style={styles.row}>
-                        <Ionicons 
-                        name="truck-delivery" 
-                        size={21} 
-                        color="#ff8c00" 
-                        style={styles.countryIcon}/>
+                </View>
+                <View style={styles.row}>
+                    <Ionicons 
+                    name="truck-delivery" 
+                    size={21} 
+                    color="#ff8c00" 
+                    style={styles.countryIcon}/>
         
-                        <Picker 
-                        mode="dropdown"
-                        style={{width: width/1.3, height: 40}} 
-                            selectedValue={this.state.deliveryarea} 
-                            onValueChange={(deliveryarea) => this.setState({deliveryarea})}> 
-                                <Picker.Item label="Select Delivery Area" value="" /> 
-                                <Picker.Item label="Ahmedabad" value="1" /> 
-                                <Picker.Item label="Gandhinagar" value="2" /> 
+                    <Picker 
+                    mode="dropdown"
+                    style={{width: width/1.3, height: 40}} 
+                        selectedValue={this.state.deliveryarea} 
+                        onValueChange={(deliveryarea) => this.setState({deliveryarea})}> 
+                            <Picker.Item label="Select Delivery Area" value="" /> 
+                            <Picker.Item label="Ahmedabad" value="1" /> 
+                            <Picker.Item label="Gandhinagar" value="2" /> 
                     </Picker>
-                    </View>
+                </View>
             </View>
         );
     }

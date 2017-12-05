@@ -116,7 +116,7 @@ export default class ModalPicker extends BaseComponent {
     
     renderOption(option) {
         return (
-            <TouchableOpacity key={option.key} onPress={()=>this.onChange(option)}>
+            <TouchableOpacity key={option.u_id} onPress={()=>this.onChange(option)}>
                 <View style={[styles.optionStyle, this.props.optionStyle]}>
                     <Text style={[styles.optionTextStyle,this.props.optionTextStyle]}>{option.ShopName}</Text>
                     <Image style={styles.checkbox} source={checkbox} />

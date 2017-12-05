@@ -57,7 +57,7 @@ export default class AllItem extends Component {
                 },
                 body: formData,
             }
-    fetch(Utils.gurl()+"/productListView", config) 
+    fetch(Utils.murl('productListView'), config) 
         .then((response) => response.json())
         .then((responseData) => {
             this.setState({

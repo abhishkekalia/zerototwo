@@ -68,7 +68,7 @@ export default class MainView extends Component {
                 body: formData,
             }
 
-            fetch(Utils.gurl()+"/listOfAllShop", config) 
+            fetch(Utils.murl('listOfAllShop'), config) 
 
         .then((response) => response.json())
         .then((responseData) => {
@@ -93,7 +93,7 @@ export default class MainView extends Component {
             body: formData,
         } 
 
-        fetch(Utils.gurl()+"/productListView", config) 
+        fetch(Utils.murl('productListView'), config) 
         .then((response) => response.json())
         .then((responseData) => {
                     // console.warn(JSON.stringify(responseData))

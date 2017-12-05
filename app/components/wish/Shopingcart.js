@@ -36,7 +36,7 @@ export default class Shopingcart extends Component {
 
     fetchData(){ 
         let formData = new FormData();
-        formData.append('u_id', String(2));
+        formData.append('u_id', String(4));
         formData.append('country', String(1));  
 
         const config = { 
@@ -47,10 +47,10 @@ export default class Shopingcart extends Component {
             },
             body: formData,
         } 
-
-        fetch("http://solutiontrackers.com/dev-a/zerototwo/index.php/Webservice/cartList", config) 
+        fetch(Utils.murl('cartList'), config) 
         .then((response) => response.json())
         .then((responseData) => { 
+            // console.warn(JSON.stringify(responseData.itemcount));
             this.setState({
                 dataSource: this.state.dataSource.cloneWithRows(responseData.data),
                 itemcount : responseData.itemcount,    
