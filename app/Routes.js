@@ -179,7 +179,7 @@ const Routes = ({loading, needSignIn}) => (
                                     key="settings" 
                                     component={Settings} 
                                     title="setting"
-                                    hideNavBar={true}/> 
+                                    navBar={CustomGenNavBar} /> 
 
 
              					

@@ -53,7 +53,53 @@ export default class MainView extends Component {
         const {dataSource } = this.state;
         dataSource && dataSource.focus();
     }
+    sharing(product_id){
+        console.warn(product_id);
+        // let formData = new FormData();
+        // formData.append('u_id', String(4));
+        // formData.append('country', String(1)); 
+        // formData.append('product_id', String(product_id)); 
+        // const config = { 
+                // method: 'POST', 
+                // headers: { 
+                    // 'Accept': 'application/json', 
+                    // 'Content-Type': 'multipart/form-data;',
+                // },
+                // body: formData,
+            // }
+        // fetch(Utils.gurl('addToWishlist'), config) 
+        // .then((response) => response.json())
+        // .then((responseData) => {
+            // alert(responseData.data.message);
+            // this.setState({
+            // data: responseData.data
+        // });
+        // }).done();
+    }
 
+    addtoWishlist(product_id){
+        console.warn(product_id);
+        let formData = new FormData();
+        formData.append('u_id', String(4));
+        formData.append('country', String(1)); 
+        formData.append('product_id', String(product_id)); 
+        const config = { 
+                method: 'POST', 
+                headers: { 
+                    'Accept': 'application/json', 
+                    'Content-Type': 'multipart/form-data;',
+                },
+                body: formData,
+            }
+        fetch(Utils.gurl('addToWishlist'), config) 
+        .then((response) => response.json())
+        .then((responseData) => {
+            alert(responseData.data.message);
+        //     this.setState({
+        //     data: responseData.data
+        // });
+        }).done();
+    }
     fetchAllShop(){
         let formData = new FormData();
         formData.append('u_id', String(2));
@@ -68,7 +114,7 @@ export default class MainView extends Component {
                 body: formData,
             }
 
-            fetch(Utils.murl('listOfAllShop'), config) 
+            fetch(Utils.gurl('listOfAllShop'), config) 
 
         .then((response) => response.json())
         .then((responseData) => {
@@ -81,7 +127,7 @@ export default class MainView extends Component {
 
     fetchData(){ 
         let formData = new FormData();
-        formData.append('u_id', String(2));
+        formData.append('u_id', String(4));
         formData.append('country', String(1));  
 
         const config = { 
@@ -93,11 +139,10 @@ export default class MainView extends Component {
             body: formData,
         } 
 
-        fetch(Utils.murl('productListView'), config) 
+        fetch(Utils.gurl('productListView'), config) 
         .then((response) => response.json())
         .then((responseData) => {
                     // console.warn(JSON.stringify(responseData))
-
             this.setState({
                 dataSource: this.state.dataSource.cloneWithRows(responseData.data),
                 refreshing : false
@@ -208,26 +253,50 @@ export default class MainView extends Component {
         let color = data.special_price ? '#C5C8C9' : '#000';
         let textDecorationLine = data.special_price ? 'line-through' : 'none';
         
+        // let heartType = data.is_feature ? 'ios-heart-outline' : 'ios-heart';
+
+        let heartType
+
+        if (data.is_feature == 0) {
+            heartType = 'ios-heart-outline'; 
+        } else {
+            heartType = 'ios-heart' ;
+        }
+        
         return (
-            <TouchableOpacity style={styles.row} onPress={Actions.deascriptionPage}> 
+            <View style={styles.row} > 
                 <View style={{flexDirection: 'row', justifyContent: "center"}}>
                     <IconBadge
                         MainElement={ 
                             <Image style={styles.thumb} 
                                 source={{ uri : data.productImage}}/>                        }
                         BadgeElement={
-                          <Text style={{color:'#FFFFFF', fontSize: 10}}>{data.discount} %off</Text>
+                            <Text style={{color:'#FFFFFF', fontSize: 10, position: 'absolute'}}>{data.discount} %off</Text>
                         }
                         IconBadgeStyle={{
                             width:50,
                             height:16,
                             top : height/5-10,
                             left: 0,
+                            position : 'absolute',
                             backgroundColor: '#87cefa'}}/>
-                            <EvilIcons style={ {left : width/3-40, position : 'absolute'}} name="heart" size={25} color="#87cefa"/>
+                            <EvilIcons style={ { position : 'absolute', left : 0}} 
+                                name="share-google" 
+                                size={20} 
+                                color="#ccc" 
+                                onPress={()=> this.sharing(data.product_id)}/>
+                            <Ionicons style={ {left : width/3-35, position : 'absolute'}} 
+                                name={heartType} 
+                                size={20} 
+                                color="#87cefa" 
+                                onPress={()=> this.addtoWishlist(data.product_id)}/>
+                             
                 </View>
+                <View style={{}}>
+                <TouchableOpacity  style={styles.name} onPress={()=>Actions.deascriptionPage({product_id : data.product_id})}>
 
-                <Text style={styles.name}>{data.product_name}</Text>
+                <Text style={{fontSize : 10}}>{data.product_name}</Text>
+                </TouchableOpacity>
                 <Text style={styles.description}>{data.short_description}</Text>
                 <View style={{
                     flex: 0, 
@@ -238,7 +307,8 @@ export default class MainView extends Component {
                     <Text style={styles.special_price}>{data.special_price}Aed</Text>
                     <Text style={{fontSize:10, color: color, textDecorationLine: textDecorationLine}}>{data.price}Aed</Text>
                 </View>
-            </TouchableOpacity>
+                </View>
+            </View>
         );
     }
 }
@@ -251,7 +321,6 @@ var styles =StyleSheet.create({
         flexWrap: 'wrap'
     },
     name : {
-        fontSize : 10,
         top : 5
     },
     description : {
@@ -283,7 +352,7 @@ var styles =StyleSheet.create({
     },
 
     thumb: {
-        width: width/3-20,
+        width: width/3-10,
         height: height/5,
         // position : "absolute"
     },

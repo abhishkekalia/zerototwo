@@ -43,13 +43,11 @@ export default class Settings extends Component {
             body: formData,
         } 
 
-        fetch(Utils.murl('setting'), config) 
+        fetch(Utils.gurl('setting'), config) 
         .then((response) => response.json())
         .then((response) => {
-                    console.warn(response.data);
-                                        console.warn(response.data.is_notification);
-
-
+            console.info(response.data);
+            console.info(response.data.is_notification);
         //     this.setState({
         //         is_notification: responseData.data.is_notification
         // });

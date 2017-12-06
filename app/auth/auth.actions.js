@@ -1,6 +1,7 @@
 import {Actions as routes} from "react-native-router-flux";
 import { MessageBarManager } from 'react-native-message-bar';
 import Utils from 'app/common/Utils'
+import { AsyncStorage } from 'react-native';
 
 export const AUTH_LOGIN_START = 'AUTH_LOGIN_START';
 export const AUTH_LOGIN_SUCCESS = 'AUTH_LOGIN_SUCCESS';
@@ -31,7 +32,7 @@ const loginSuccess = (username, password, os) => {
 	formData.append('email', String(username));
 	formData.append('password', String(password)); 
 	formData.append('device_type', String(os)); 
-	formData.append('device_token', String('urtihFTYR6767UTYU^TJKHUT65gG')); 
+	formData.append('device_token', Math.random().toString()); 
 
 	const config = { 
                 method: 'POST', 
@@ -41,9 +42,14 @@ const loginSuccess = (username, password, os) => {
                 },
                 body: formData,
             }
-    fetch(Utils.gurl()+"/login", config) 
+    fetch(Utils.gurl('login'), config) 
     .then((response) => response.json()) 
     .then((responseData) => {
+    	    	AsyncStorage.setItem('data', JSON.stringify({
+    	    	    	    		"u_id" : responseData.response.data.u_id , 
+    	    	    	    		"u_name" : responseData.response.data.fullname } 
+    	    	    	    		));
+
     	 if (responseData.response.status) { 
     	 	routes.homePage();
          } else {

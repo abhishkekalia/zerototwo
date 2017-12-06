@@ -100,7 +100,6 @@ export default class AddressBook extends Component {
 	onPopupEvent = (data, eventName, index) => {
     if (eventName !== 'itemSelected') return
     if (index === 0) this.onEdit(data);
-
     else this.onRemove(data)}
 	    render() {
 

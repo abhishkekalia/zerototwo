@@ -82,10 +82,10 @@ class Profile extends Component {
 				<View style={[styles.content, {flexDirection : 'row', justifyContent: 'space-between' ,padding : 0}]}>
 
 					<View style={{ padding : 20}}>
-					<View style={{ flexDirection : 'row', justifyContent: 'space-between', paddingRight:10, paddingLeft:10, backgroundColor:'#ccc' }}>
-						<Text style={{ fontSize : 10}}>My Address Book</Text>
+					<View style={{ flexDirection : 'row', justifyContent: 'space-between', paddingRight:10, paddingLeft:10,  }}>
+						<Text style={{ fontSize : 10, color:"#900"}}>My Address Book</Text>
 							<TouchableOpacity style={{ justifyContent: 'center', alignItems : 'center' }} onPress={()=>Actions.addressbook()} >
-								<Ionicons name="ios-arrow-forward" size={25} color="#87cefa"/>
+								<Ionicons name="ios-arrow-forward" size={25} color="#ccc"/>
 							</TouchableOpacity >
 					</View>
 					
@@ -100,6 +100,10 @@ class Profile extends Component {
 					</Text>
 				</View>
 				</View>
+				<TouchableOpacity onPress={()=>Actions.settings()} style={styles.setings}>
+					<Text>Settings</Text>
+					<Ionicons name="ios-arrow-forward" size={25} color="#ccc"/>
+				</TouchableOpacity>
 			</View>
 		)
 	}
@@ -114,6 +118,13 @@ const styles = StyleSheet.create({
 	content: {
 		borderWidth : 1,
 		borderColor :'#ccc',
+	},
+	setings : { 
+		top : 5, 
+		backgroundColor : '#fff', 
+		padding : 10, 
+		flexDirection: "row", 
+		justifyContent: "space-between"
 	},
 	label: {
 		color: '#ccc',

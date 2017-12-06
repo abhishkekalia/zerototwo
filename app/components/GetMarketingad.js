@@ -19,7 +19,6 @@ export default class GetMarketing extends Component {
         super(props);        
         this.state={ 
             dataSource: new ListView.DataSource({   rowHasChanged: (row1, row2) => row1 !== row2 }), 
-            dataSource2: new ListView.DataSource({  rowHasChanged: (row1, row2) => row1 !== row2 }), 
         }
     }
 
@@ -40,7 +39,7 @@ export default class GetMarketing extends Component {
                 },
                 body: formData,
             }
-    fetch(Utils.murl('productListView'), config) 
+    fetch(Utils.gurl('productListView'), config) 
         .then((response) => response.json())
         .then((responseData) => {
             this.setState({
@@ -51,7 +50,6 @@ export default class GetMarketing extends Component {
     }
 
     render() {
-
         let listView = (<View></View>);
             listView = (
                 <ListView
@@ -69,10 +67,9 @@ export default class GetMarketing extends Component {
                 />
             );
         return (
-        <View style={{ borderBottomWidth: 1, borderColor: '#CCC'}}>{listView}</View>
+        <View style={{ borderBottomWidth: 0.5, borderColor: '#CCC'}}>{listView}</View>
         );
     }
-
     renderData(data, rowData: string, sectionID: number, rowID: number, index) {
         return (
             <TouchableOpacity style={styles.row} onPress={()=> Actions.timeLine({ 

@@ -58,7 +58,7 @@ export default class ProductDescription extends Component {
         let formData = new FormData();
         formData.append('u_id', String(4));
         formData.append('country', String(1)); 
-        formData.append('product_id', String(9)); 
+        formData.append('product_id', String(this.props.product_id)); 
 
         const config = { 
             method: 'POST', 
@@ -124,7 +124,6 @@ export default class ProductDescription extends Component {
                         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                             <TouchableOpacity style={{flexDirection : 'row'}}>
                             <Ionicons name="select-all" size={25} color="orange"/><Text style={{color: 'skyblue'}}>Select Size</Text></TouchableOpacity>
-                            <Text style={{color: 'red'}} onPress={this.sizechart}>Size Chart</Text>
                         </View>
                         <View style={{flexDirection: 'row'}}>
     

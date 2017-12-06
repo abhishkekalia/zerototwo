@@ -33,7 +33,7 @@ export default class WishList extends Component {
 
     fetchData(){ 
         let formData = new FormData();
-        formData.append('u_id', String(2));
+        formData.append('u_id', String(4));
         formData.append('country', String(1));  
 
         const config = { 
