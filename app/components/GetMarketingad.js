@@ -39,7 +39,9 @@ export default class GetMarketing extends Component {
                 },
                 body: formData,
             }
-    fetch(Utils.gurl('productListView'), config) 
+    fetch(`http://solutiontrackers.com/dev-a/zerototwo/index.php/Webservice/getMarketingAd`, config) 
+
+    // fetch(Utils.gurl('getMarketingAd'), config) 
         .then((response) => response.json())
         .then((responseData) => {
             this.setState({
@@ -51,31 +53,31 @@ export default class GetMarketing extends Component {
 
     render() {
         let listView = (<View></View>);
-            listView = (
-                <ListView
-                dataSource={this.state.dataSource}
-                renderRow={this.renderData.bind(this)}
-                contentContainerStyle={styles.list}
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}
-                automaticallyAdjustContentInsets={true}
-                removeClippedSubviews={true}
-                enableEmptySections={true}
-                showsVerticalScrollIndicator = {false}
-                alwaysBounceHorizontal= {true}
-                bouncesZoom={false}                
-                />
-            );
+                listView = (
+                    <ListView
+                    dataSource={this.state.dataSource}
+                    renderRow={this.renderData.bind(this)}
+                    contentContainerStyle={styles.list}
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}
+                    automaticallyAdjustContentInsets={true}
+                    removeClippedSubviews={true}
+                    enableEmptySections={true}
+                    showsVerticalScrollIndicator = {false}
+                    alwaysBounceHorizontal= {true}
+                    bouncesZoom={false}                
+                    />
+                );
         return (
-        <View style={{ borderBottomWidth: 0.5, borderColor: '#CCC'}}>{listView}</View>
+        <View style={{ borderBottomWidth: 0.5, borderColor: '#CCC' , height: 50}}>{listView}</View>
         );
     }
     renderData(data, rowData: string, sectionID: number, rowID: number, index) {
         return (
             <TouchableOpacity style={styles.row} onPress={()=> Actions.timeLine({ 
-                    uri : data.productImage })}> 
+                    uri : data.path })}> 
                         <Image style={styles.thumb} 
-                            source={{ uri : data.productImage}}/>
+                            source={{ uri : data.path}}/>
             </TouchableOpacity>
         );
     }
@@ -91,12 +93,12 @@ var styles =StyleSheet.create({
     row: {
         // flex: 1,
         // borderRadius : 40,
-        flexDirection: 'column',
-        justifyContent: 'space-between',
         // padding: 5,
-        margin: 3,
         // borderWidth: 1,
         // borderColor: '#CCC'
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        margin: 3,
     },
 
     thumb: {

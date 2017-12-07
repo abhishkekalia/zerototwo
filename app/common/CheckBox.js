@@ -50,8 +50,7 @@ export default class CheckBox extends Component {
             if (this.props.leftTextView)return this.props.leftTextView;
         if (!this.props.leftText)return null;
         return (
-            <View style={{flexDirection: 'row', paddingLeft : 10, backgroundColor : '#ccc'}}>
-                    <Icon name={this.props.icon_name} size={25}  color="#900" />
+            <View style={{flexDirection: 'row', paddingLeft : 10, backgroundColor : 'transparent'}}>
                 <Text style={[styles.leftText, this.props.leftTextStyle]}>{this.props.leftText}</Text>
             </View>
         );
@@ -85,7 +84,7 @@ export default class CheckBox extends Component {
         }   
 
         return (
-            <Icon style={{ paddingRight : 5}} name={source} size={25}  color="#900" />
+            <Icon style={{ paddingRight : 5}} name={source} size={25}   />
         );
     }
 

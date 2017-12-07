@@ -3,12 +3,14 @@ import {
     StyleSheet,
     ScrollView,
     TouchableOpacity,
+    Dimensions,
     Text,
     View,
 } from 'react-native'
-// import CheckBox from 'app/common/CheckBox';
+import CheckBox from 'app/common/CheckBox';
+const { width, height } = Dimensions.get('window');
 
-import CheckBox from 'react-native-check-box';
+// import CheckBox from 'react-native-check-box';
 import Utils from 'app/common/Utils';
 import Modal from 'react-native-modal';
 
@@ -17,6 +19,7 @@ export default class AllShop extends Component {
         super(props);
         this.state = {
             dataArray: [],
+            rows: [],
             isModalVisible: false
         }
     }
@@ -50,11 +53,50 @@ export default class AllShop extends Component {
 
     onClick(data) {
         // console.warn(JSON.stringify(this.state.dataArray))
-        // console.warn(JSON.stringify(data.name))
+        // console.warn(JSON.stringify(data.u_id))
+        var newStateArray = this.state.rows.slice();
+        newStateArray.push(data.u_id); 
+        this.setState({
+            rows: newStateArray
+        });
+
         data.checked = !data.checked;
         let msg=data.checked? 'you checked ':'you unchecked '
 
         // this.toast.show(msg+data.name);
+        var myarray = [0, 1, 2, 3, 2, 2, 2, 5, 1, 6,];
+        var indicesToRemove = new Array();
+        var valremove = new Array();
+
+for(i=0;i<myarray.length;i++){
+    if(myarray[i]===2){ //let's say u wud like to remove all 2 
+        indicesToRemove.push(i); //getting the indices and pushing it in a new array
+    }
+}
+for(i=0;i<myarray.length;i++){
+    if(myarray[i]===1){ //let's say u wud like to remove all 2 
+        valremove.push(i); //getting the indices and pushing it in a new array
+    }
+}
+
+for (var j = indicesToRemove.length -1; j >= 0; j--){
+    myarray.splice(indicesToRemove[j],1);
+}
+for (var j = valremove.length -1; j >= 0; j--){
+    myarray.splice(valremove[j],1);
+}
+
+alert(JSON.stringify(myarray)); //myarray will be [0,1,3,5,6]
+    
+
+
+    }
+
+
+    cancelFilter(){
+        this.setState({
+            rows:''
+        })
     }
 
     renderView() {
@@ -91,12 +133,14 @@ export default class AllShop extends Component {
                 style={{flex: 1, padding: 5, borderTopWidth : 1, borderColor : '#ccc'}}
                 onClick={()=>this.onClick(data)}
                 isChecked={data.checked}
-                leftText={leftText}
+                leftText={leftText}AllShop
                 icon_name={icon_name}
             />);
     }
 
     render() {
+                console.warn(JSON.stringify(this.state.rows))
+
         return (
             <View style={styles.container}>
 
@@ -109,9 +153,20 @@ export default class AllShop extends Component {
                 <ScrollView>
                     {this.renderView()}
                 </ScrollView>
-                <TouchableOpacity onPress={this.modal}>
-                <Text>close Modal</Text>
-            </TouchableOpacity>
+                 <View style={{ flexDirection : 'row', justifyContent : 'space-around'}}>
+                <TouchableOpacity 
+                underlayColor ={"#fff"} 
+                style={[styles.shoping]} 
+                onPress={()=>this.modal()}>
+                <Text>Done</Text>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                underlayColor ={"#fff"} 
+                style={[styles.checkout]} 
+                onPress={()=> this.cancelFilter()}>
+                <Text>Cancel</Text>
+                </TouchableOpacity>
+            </View>
                 </View>
             </Modal>
         </View>
@@ -122,19 +177,30 @@ export default class AllShop extends Component {
 
 const styles = StyleSheet.create({
 container: {
-    flex: 1,
-    // justifyContent: 'center',
-    // alignItems: 'center',
+    // flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: '#F5FCFF',
   },   
-  item: {
-        flexDirection: 'column',
+  footer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
     },
     line: {
         flex: 1,
         height: 1,
         backgroundColor: 'darkgray',
     },
+    shoping : {
+        width : width/2-20,
+        alignItems : 'center',
+        padding : 10
+    },
+    checkout : {
+        width : width/2-20,
+        alignItems : 'center',
+        padding : 10
+     }
 })
 
                 

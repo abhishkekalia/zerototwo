@@ -53,6 +53,36 @@ export default class ProductDescription extends Component {
             console.warn('Cannot open date picker', message); 
         }
     }
+    addtoCart(){
+    const { size, color, quantity , product_id} = this.state; 
+
+        let formData = new FormData();
+        formData.append('u_id', String(4));
+        formData.append('country', String(1)); 
+        formData.append('product_id', String(this.props.product_id)); 
+        formData.append('size', String(size)); 
+        formData.append('color', String(color)); 
+        formData.append('quantity', String(quantity)); 
+
+        const config = { 
+            method: 'POST', 
+            headers: { 
+                'Accept': 'application/json', 
+                'Content-Type': 'multipart/form-data;',
+            },
+            body: formData,
+        }
+        
+        fetch(Utils.gurl('addTocart'), config) 
+        .then((response) => response.json())
+        .then((responseData) => {
+            // this.setState({ 
+                // imgList: responseData.data.productImages,
+                // data : responseData.data
+        // });
+        })
+        .done();
+    }
 
     fetchData(){ 
         let formData = new FormData();
@@ -69,7 +99,7 @@ export default class ProductDescription extends Component {
             body: formData,
         }
         
-        fetch(Utils.murl('productDetailView'), config) 
+        fetch(Utils.gurl('productDetailView'), config) 
         .then((response) => response.json())
         .then((responseData) => {
             this.setState({ 

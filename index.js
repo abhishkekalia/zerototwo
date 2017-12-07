@@ -4,8 +4,8 @@ import Root from './app/Root';
 import Filter from './app/components/Filter';
 import ProductDescription from "./app/components/ProductDescription";
 import wishList from './app/components/wish/wishList'
-import AllShop from "./app/components/AllShop";
+import Contact from "./app/components/Contact";
 
 // import Login from "./app/auth/components/Login";
 
-AppRegistry.registerComponent('AwesomeApp', () => AllShop);
+AppRegistry.registerComponent('AwesomeApp', () => Contact);

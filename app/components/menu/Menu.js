@@ -16,6 +16,7 @@ import { Actions } from 'react-native-router-flux';
 import Zocial from 'react-native-vector-icons/Zocial';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import IconBadge from 'react-native-icon-badge';
+import Utils from 'app/common/Utils';
 
 const window = Dimensions.get('window');
 
@@ -95,7 +96,7 @@ class Menu extends React.Component {
                 onPress={Actions.marketing}
                 style={[styles.item, styles.seprator]}> Marketing</Text>
                 <Text
-                onPress={logout}
+                onPress={()=>( Utils.persistremove()),logout}
                 style={styles.item}> logout</Text>
             </ScrollView>
         );

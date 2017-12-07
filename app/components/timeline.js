@@ -19,35 +19,45 @@ export default class Timeline extends Component{
         this.state = {
           progress: 0
         };
+    }
+    componentDidMount(){
+        // let i = 0;
+        // let start = Date.now();
+        // for (let j = 0; j < 1e9; j++) { 
+            // i++;
+        // }
+        // alert("Done in " + (Date.now() - start) + 'ms');
+        setTimeout(()=>{
+            Actions.pop()
+        }, 5000);
     }  
     render() {
-            setTimeout((()=> {
-      this.setState({ progress: this.state.progress + (0.4 * Math.random())});
-    }), 1000);
-
-            setTimeout(()=>{
-                Actions.pop()
-            }, 10000);
+        setTimeout((()=> { 
+                this.setState({ 
+                    progress: this.state.progress + (1 * Math.random())});
+                }), 
+            1000);
+ 
         return (
-      <View style={styles.container}>
-      <ProgressBar
-          fillStyle={{}}
-          backgroundStyle={{backgroundColor: '#fff', borderRadius: 1}}
-          style={{ width: width}}
-          progress={this.state.progress}
-        />
-            <Image
-          source={{uri: this.props.uri ,width: width, height: 500}}
-          style={{  
-            alignSelf: 'center',
-            flex: 1,
-            width: width,
-            height: null,
-            resizeMode: 'cover',
-            borderWidth: 1,
-}}
-            resizeMode="stretch"/>
-        </View>
+            <View style={styles.container}>
+                <ProgressBar
+                    fillStyle={{}}
+                    backgroundStyle={{backgroundColor: '#fff'}}
+                    style={{ width: width}}
+                    progress={this.state.progress}
+                />
+                <Text>{this.state.progress}</Text>
+                <Image
+                source={{uri: this.props.uri ,width: width, height: 500}}
+                style={{  
+                alignSelf: 'center',
+                flex: 1,
+                width: width,
+                height: null,
+                resizeMode: 'cover',
+                borderWidth: 1,}}
+                resizeMode="stretch"/>
+            </View>
         )
     }
 }
@@ -68,4 +78,3 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
 });
-

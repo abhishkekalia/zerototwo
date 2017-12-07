@@ -21,6 +21,8 @@ export default class WelcomeScreen extends Component {
     constructor(props) { 
         super(props); 
         this.fetchData=this.fetchData.bind(this);
+        this.gotologin = this.gotologin.bind(this);
+
         this.state = { 
             userTypes: '', 
             selectedUserType: '',
@@ -44,6 +46,7 @@ export default class WelcomeScreen extends Component {
         })
         .then((response) => response.json())
         .then((responseData) => { 
+                    // console.warn(JSON.stringify(responseData))
             this.setState({
                 userTypes: responseData.response.data,
                  loaded: true
@@ -60,26 +63,30 @@ export default class WelcomeScreen extends Component {
             );
     }
 
-    loadUserTypes() {
-        return this.state.userTypes.map(user => ( 
-            <Picker.Item label={user.country_name} value={user.country_id} /> 
-        ))
-    } 
-
-    render(){ 
+    gotologin(){
         const { deliveryarea, selectedUserType } = this.state
         if (deliveryarea.length && selectedUserType.length ) { 
             Actions.loginPage();
         }
+    }
+
+    loadUserTypes() {
+        return this.state.userTypes.map(user => ( 
+            <Picker.Item key={user.country_id} label={user.country_name} value={user.country_id} /> 
+        ))
+    } 
+
+    render(){ this.gotologin()
+        
         if (!this.state.loaded) {
             return this.renderLoadingView();
         }
         return ( 
             <View style={styles.container}>
                 <View style={styles.row}>
-                    <Image style={styles.countryIcon} source={require('../images/_Select_Country-128.png')} />
+                    <Image style={{ width:21, height:21, marginRight : 15}} source={require('../images/_Select_Country-128.png')} />
         
-                        <Picker style={{width: width/1.3, height: 40}}
+                        <Picker style={{width: width/1.5, height: 40, backgroundColor: '#fff'}}
                             mode="dropdown"
                             selectedValue={this.state.selectedUserType}
                             onValueChange={(itemValue, itemIndex) => 
@@ -98,7 +105,7 @@ export default class WelcomeScreen extends Component {
         
                     <Picker 
                     mode="dropdown"
-                    style={{width: width/1.3, height: 40}} 
+                    style={{width: width/1.5, height: 40, backgroundColor: '#fff'}} 
                         selectedValue={this.state.deliveryarea} 
                         onValueChange={(deliveryarea) => this.setState({deliveryarea})}> 
                             <Picker.Item label="Select Delivery Area" value="" /> 
@@ -122,14 +129,17 @@ const styles = StyleSheet.create({
     row: {
         flexDirection: 'row',
         borderWidth: 1, 
+        borderRadius: 5, 
         borderColor: '#CCC',
+        justifyContent: 'center',
+        alignItems: 'center' ,
         backgroundColor: '#F6F6F6',
         marginBottom : 10
     }, 
 
     countryIcon: {
-        borderRightWidth: 1, 
-        borderColor: '#CCC',
+        // borderRightWidth: 1, 
+        // borderColor: '#CCC',
         width : 40,
         height:40,
         padding :10

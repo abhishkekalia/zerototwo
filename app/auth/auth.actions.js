@@ -45,10 +45,17 @@ const loginSuccess = (username, password, os) => {
     fetch(Utils.gurl('login'), config) 
     .then((response) => response.json()) 
     .then((responseData) => {
-    	    	AsyncStorage.setItem('data', JSON.stringify({
-    	    	    	    		"u_id" : responseData.response.data.u_id , 
-    	    	    	    		"u_name" : responseData.response.data.fullname } 
-    	    	    	    		));
+    	    	AsyncStorage.setItem('data', JSON.stringify({ 
+    	    		"userdetail" : { 
+	    	       		"u_id" : responseData.response.data.u_id , 
+	    	       		"fullname" : responseData.response.data.fullname , 
+	    	       		"email" : responseData.response.data.email ,
+	    	       		"phone_no" : responseData.response.data.phone_no ,
+	    	       		"country" : responseData.response.data.country ,
+	    	       		"address" : responseData.response.data.address ,
+	    	       		"u_name" : responseData.response.data.is_active 
+        	    	}
+        	    }));
 
     	 if (responseData.response.status) { 
     	 	routes.homePage();
