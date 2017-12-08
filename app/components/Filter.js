@@ -53,7 +53,7 @@ export default class Filter extends Component {
                 },
                 body: formData,
             }
-    fetch(Utils.murl('getFilterMenu'), config) 
+    fetch(Utils.gurl('getFilterMenu'), config) 
         .then((response) => response.json())
         .then((responseData) => {
             this.setState({

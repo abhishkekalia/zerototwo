@@ -42,7 +42,7 @@ export default class AddressBook extends Component {
                },
                body: formData,
           }
-          fetch(Utils.murl('addressList'), config)  
+          fetch(Utils.gurl('addressList'), config)  
           .then((response) => response.json())
           .then((responseData) => { 
                            // console.warn(JSON.stringify(responseData));
@@ -67,7 +67,7 @@ export default class AddressBook extends Component {
                },
                body: formData,
           }
-          fetch(Utils.murl('deleteAddress'), config)  
+          fetch(Utils.gurl('deleteAddress'), config)  
           .then((response) => response.json())
           .then((responseData) => {
           alert(JSON.stringify(responseData)) 

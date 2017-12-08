@@ -5,7 +5,7 @@ import * as authActions from "app/auth/auth.actions";
 
 function mapStateToProps(state) {
     return {
-        identity: state.identity
+        identity: state.identity,
     }
 }
 

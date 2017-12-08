@@ -26,7 +26,6 @@ import Ionicons from 'react-native-vector-icons/Feather';
 import wishList from './components/wish/wishList'
 import Shopingcart from './components/wish/Shopingcart'
 
-
 import CustomNavBar from "./components/navbar/CustomNavBar";
 import CustomGenNavBar from "./components/navbar/CustomGenNavBar";
 
@@ -38,6 +37,7 @@ import ProductDescription from './components/ProductDescription';
 import Newaddress from './components/Newaddress';
 import Timeline from "./components/timeline";
 import Settings from "./components/settings";
+import Contact from "./components/Contact";
 
 import Filter from './components/Filter';
 
@@ -71,7 +71,7 @@ const Routes = ({loading, needSignIn}) => (
        				// initial={!needSignIn} 
 		            // key="zerototwo" 
 		            // contentComponent={Menu}
-		            renderRightButton={() => <Ionicons name="filter" size={20} onPress={()=> Actions.filterBar()}/>}>
+		            renderRightButton={() => <Ionicons name="filter" size={20} onPress={()=> Actions.filterBar()} color="#fff" style={{ padding : 10}}/>}>
 
     	                <Stack key="root" drawer={false} >
        	                	<Scene key='landingpage' component={WelcomeScreen} hideNavBar={true} initial={needSignIn}/>
@@ -163,7 +163,12 @@ const Routes = ({loading, needSignIn}) => (
              						key="deascriptionPage" 
              						component={ProductDescription} 
              						title="product description" 
-			          				navBar={CustomGenNavBar} /> 
+			          				navBar={CustomGenNavBar} />
+                                <Scene 
+                                    key="contact" 
+                                    component={Contact} 
+                                    title="Contact Us" 
+                                    navBar={CustomGenNavBar} /> 
 
                                 <Scene 
                                 	key="profile" 

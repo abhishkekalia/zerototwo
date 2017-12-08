@@ -28,7 +28,7 @@ export default class GetMarketing extends Component {
 
     fetchData(){ 
         let formData = new FormData();
-        formData.append('u_id', String(2));
+        formData.append('u_id', String(7));
         formData.append('country', String(1)); 
 
     const config = { 
@@ -39,11 +39,12 @@ export default class GetMarketing extends Component {
                 },
                 body: formData,
             }
-    fetch(`http://solutiontrackers.com/dev-a/zerototwo/index.php/Webservice/getMarketingAd`, config) 
+    // fetch(`http://solutiontrackers.com/dev-a/zerototwo/index.php/Webservice/getMarketingAd`, config) 
 
-    // fetch(Utils.gurl('getMarketingAd'), config) 
+    fetch(Utils.gurl('getMarketingAd'), config) 
         .then((response) => response.json())
         .then((responseData) => {
+                    // console.warn(JSON.stringify(responseData))
             this.setState({
                 dataSource: this.state.dataSource.cloneWithRows(responseData.data),
                 refreshing : false

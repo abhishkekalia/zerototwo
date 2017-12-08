@@ -34,7 +34,7 @@ class Profile extends Component {
                 },
             	body: formData,
             }
-        fetch(Utils.murl('getmyaddress'), config)  
+        fetch(Utils.gurl('getmyaddress'), config)  
         .then((response) => response.json())
         .then((responseData) => { 
             this.setState({ 

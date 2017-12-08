@@ -8,4 +8,4 @@ import Contact from "./app/components/Contact";
 
 // import Login from "./app/auth/components/Login";
 
-AppRegistry.registerComponent('AwesomeApp', () => Contact);
+AppRegistry.registerComponent('AwesomeApp', () => Root);

@@ -8,16 +8,18 @@ import {
 	Switch,
 	ScrollView,
 	Platform,
-	Picker
+	Picker,
+	Dimensions
 } from "react-native";
 import {Loader} from "app/common/components";
 import commonStyles from "app/common/styles";
 import {Actions as routes} from "react-native-router-flux";
 
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/Ionicons';
 import PasswordInputText from 'react-native-hide-show-password-input';
 import { SegmentedControls } from 'react-native-radio-buttons';
 import Utils from 'app/common/Utils'
+const { width, height } = Dimensions.get('window')
 
 const INITIAL_STATE = { 
 	fullname: '', 
@@ -38,6 +40,8 @@ class Register extends Component {
 		super(props); 
 		this.toggleSwitch = this.toggleSwitch.bind(this);
     	this.state = {
+            userTypes: [], 
+            selectCountry: '',
 			fullname: '', 
 			email: '', 
 			password: '',
@@ -46,9 +50,35 @@ class Register extends Component {
 			country: '',
 			address: '',
 			gender : '',
+			hidden : true,
 			os : (Platform.OS === 'ios') ? 2 : 1,
 		};
 	}
+	componentDidMount(){
+        this.fetchData();
+    }
+    eye() {
+    	this.setState({
+    		hidden : !this.state.hidden
+    	})
+
+    }
+    fetchData(){
+        fetch(Utils.gurl('countryList'),{
+             method: "GET", headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }   
+        })
+        .then((response) => response.json())
+        .then((responseData) => { 
+                    // console.warn(JSON.stringify(responseData))
+            this.setState({
+                userTypes: responseData.response.data,
+                 loaded: true
+        });
+        }).done();
+    }
 
 	toggleSwitch() { 
 	 	this.setState({ showPassword: !this.state.showPassword }); 
@@ -58,8 +88,16 @@ class Register extends Component {
         	gender: option,
       	});
     }
+    loadUserTypes() {
+        return this.state.userTypes.map(user => ( 
+            <Picker.Item key={user.country_id} label={user.country_name} value={user.country_id} /> 
+        ))
+    } 
 
 	render() {
+		        let icon = this.state.hidden ? 'md-eye-off' :'md-eye';
+		        // let icon = this.state.hidden ? 'ios-eye' : 'ios-eye-off';
+
 		const {errorStatus, loading} = this.props;
 		return (
 			<ScrollView style={[ commonStyles.content]} testID="Login">
@@ -91,12 +129,26 @@ class Register extends Component {
 							onChangeText={(email) => this.setState({email})}
 						/>
 					</View>
-					
-					<PasswordInputText
-                    value={this.state.password}
-                    onChangeText={ (password) => this.setState({ password }) }
-                	/>
+					<View style ={[commonStyles.iconusername, { alignItems: 'center'}]}>
+						
+						<TextInput
+							style={commonStyles.inputpassword}
+                           	secureTextEntry={this.state.hidden}
+                           	value={this.state.password}
+							underlineColorAndroid = 'transparent'
+							autoCorrect={false}
+							placeholder="Password"
+							maxLength={140}
+							onSubmitEditing={() => this.onSubmit()}
+                    		onChangeText={ (password) => this.setState({ password }) }
+						/>
+						<Icon name={icon} size={25} color="#000" onPress={()=> this.eye() }/>
+
+					</View>
+
  				<View style={{borderBottomWidth: 0.5, borderColor: 'red'}}>
+ 				        			<Text/>
+
         			<SegmentedControls
         			  tint= {'#87cefa'}
         			  selectedTint= {'white'}
@@ -121,7 +173,7 @@ class Register extends Component {
         			    return a.label === b.label
         			  }}
         			/>
-        			<Text></Text>
+        			<Text/>
      			</View>
 				
 				<View style ={commonStyles.iconusername}>
@@ -141,21 +193,17 @@ class Register extends Component {
 					<View style={{
         					backgroundColor: 'white',
         					alignSelf: 'stretch',
-        					margin: 20,
+        					// margin: 20,
         					}}>						
-						<Picker
-            				selectedValue={this.state.country}
-            				onValueChange={(country) => this.setState({country})}
-            				mode="modal"
-            				style={{
-            				  alignSelf: 'stretch',
-            				  color: 'black',
-            				}}>
-				            <Picker.Item label="Select Country" value="" />
-				            <Picker.Item label="India" value="1" />
-				            <Picker.Item label="United States" value="2" />
-				            <Picker.Item label="United Kingdom" value="3" />
-         				</Picker>
+						<Picker style={{width: width/1.5, height: 40, backgroundColor: '#fff'}}
+                            mode="dropdown"
+                            selectedValue={this.state.selectCountry}
+                            onValueChange={(itemValue, itemIndex) => 
+                                this.setState({selectCountry: itemValue})}>
+                                
+                                <Picker.Item label="Select country" value="" /> 
+                               {this.loadUserTypes()}
+                            </Picker>
 					</View>
 					<View style ={commonStyles.iconusername}>
 		
@@ -185,29 +233,29 @@ class Register extends Component {
 		const {fullname, email, password, gender, contact, country, os, address } = this.state;
 		this.setState({...INITIAL_STATE, loading: true});
 
-	let formData = new FormData();
-	formData.append('fullname', String(fullname));
-	formData.append('email', String(email));
-	formData.append('password', String(password));
-	formData.append('gender', String(gender.value));
-	formData.append('country', String(country));
-	formData.append('user_type', String(3));
-	formData.append('device_type', String(os));
-	formData.append('device_token', String(Math.random().toString()));
-	formData.append('phone_no', String(contact)); 
-	formData.append('address', String(address)); 
-	formData.append('representative_name', String('Ankita')); 
-	formData.append('facebook_id', String('sdfs')); 
-	formData.append('twitter_id', String('fsdfsd')); 
-	formData.append('instagram_id', String('sdfsdf')); 
-	formData.append('snapchat_id', String('dfdsf')); 
-	formData.append('card_number', String('343454645664')); 
-	formData.append('expiry_month', String('3')); 
-	formData.append('expiry_year', String('20')); 
-	formData.append('cvv', String('456')); 
+		let formData = new FormData();
+		formData.append('fullname', String(fullname));
+		formData.append('email', String(email));
+		formData.append('password', String(password));
+		formData.append('gender', String(gender.value));
+		formData.append('country', String(country));
+		formData.append('user_type', String(3));
+		formData.append('device_type', String(os));
+		formData.append('device_token', String(Math.random().toString()));
+		formData.append('phone_no', String(contact)); 
+		formData.append('address', String(address)); 
+		formData.append('representative_name', String('Ankita')); 
+		formData.append('facebook_id', String('sdfs')); 
+		formData.append('twitter_id', String('fsdfsd')); 
+		formData.append('instagram_id', String('sdfsdf')); 
+		formData.append('snapchat_id', String('dfdsf')); 
+		formData.append('card_number', String('343454645664')); 
+		formData.append('expiry_month', String('3')); 
+		formData.append('expiry_year', String('20')); 
+		formData.append('cvv', String('456')); 
 
 
-	console.warn(JSON.stringify(formData));
+	// console.warn(JSON.stringify(formData));
 		// console.warn(this.state.os);
 	
 	const config = { 
@@ -219,10 +267,12 @@ class Register extends Component {
                 body: formData,
             }
 	
-	fetch(Utils.gurl()+'/register', config) 
+	fetch(Utils.gurl('register'), config) 
     .then((response) => response.json()) 
     .then((responseData) => {
-    		console.warn(JSON.stringify(responseData.response));
+
+    	routes.loginPage()
+    		// console.warn(JSON.stringify(responseData.response));
 
     	 // if (responseData.response.status) { 
     	 	// routes.homePage();

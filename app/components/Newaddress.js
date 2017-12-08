@@ -51,7 +51,7 @@ export default class Newaddress extends Component<{}> {
                 body: formData,
             }
 
-          fetch(Utils.murl('editAddress'), config)  
+          fetch(Utils.gurl('editAddress'), config)  
           .then((response) => response.json())
           .then((responseData) => { 
                            // console.warn(JSON.stringify(responseData));
@@ -101,7 +101,7 @@ export default class Newaddress extends Component<{}> {
                 },
                 body: formData,
             }
-        fetch(Utils.murl('editAddress'), config) 
+        fetch(Utils.gurl('editAddress'), config) 
         .then((response) => response.json())
         .then((responseData) => {
             routes.pop();
@@ -148,7 +148,7 @@ export default class Newaddress extends Component<{}> {
                 },
                 body: formData,
             }
-        fetch(Utils.murl('addAddress'), config) 
+        fetch(Utils.gurl('addAddress'), config) 
         .then((response) => response.json())
         .then((responseData) => {
             routes.pop();

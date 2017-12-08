@@ -56,7 +56,6 @@ const loginSuccess = (username, password, os) => {
 	    	       		"u_name" : responseData.response.data.is_active 
         	    	}
         	    }));
-
     	 if (responseData.response.status) { 
     	 	routes.homePage();
          } else {

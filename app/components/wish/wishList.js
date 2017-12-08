@@ -45,7 +45,7 @@ export default class WishList extends Component {
             body: formData,
         } 
 
-        fetch(Utils.murl('wishlistDetail'), config) 
+        fetch(Utils.gurl('wishlistDetail'), config) 
         .then((response) => response.json())
         .then((responseData) => {
 

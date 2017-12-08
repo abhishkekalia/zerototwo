@@ -25,7 +25,7 @@ export default class WelcomeScreen extends Component {
 
         this.state = { 
             userTypes: '', 
-            selectedUserType: '',
+            selectCountry: '',
             animating: true, 
             refreshing: false,
             loaded: false,
@@ -38,7 +38,7 @@ export default class WelcomeScreen extends Component {
     }
     fetchData(){
         const { container_id, type} = this.state; 
-        fetch(Utils.murl('countryList'),{
+        fetch(Utils.gurl('countryList'),{
              method: "GET", headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
@@ -64,8 +64,8 @@ export default class WelcomeScreen extends Component {
     }
 
     gotologin(){
-        const { deliveryarea, selectedUserType } = this.state
-        if (deliveryarea.length && selectedUserType.length ) { 
+        const { deliveryarea, selectCountry } = this.state
+        if (deliveryarea.length && selectCountry.length ) { 
             Actions.loginPage();
         }
     }
@@ -88,9 +88,9 @@ export default class WelcomeScreen extends Component {
         
                         <Picker style={{width: width/1.5, height: 40, backgroundColor: '#fff'}}
                             mode="dropdown"
-                            selectedValue={this.state.selectedUserType}
+                            selectedValue={this.state.selectCountry}
                             onValueChange={(itemValue, itemIndex) => 
-                                this.setState({selectedUserType: itemValue})}>
+                                this.setState({selectCountry: itemValue})}>
                                 
                                 <Picker.Item label="Select country" value="" /> 
                                {this.loadUserTypes()}

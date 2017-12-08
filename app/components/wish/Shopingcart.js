@@ -47,7 +47,7 @@ export default class Shopingcart extends Component {
             },
             body: formData,
         } 
-        fetch(Utils.murl('cartList'), config) 
+        fetch(Utils.gurl('cartList'), config) 
         .then((response) => response.json())
         .then((responseData) => { 
             // console.warn(JSON.stringify(responseData.itemcount));
@@ -128,21 +128,20 @@ export default class Shopingcart extends Component {
                 </View>
             </View>
 
-        <View style={{ flexDirection : 'row', justifyContent : 'space-around'}}>
-                    <TouchableHighlight 
-                    underlayColor ={"#fff"} 
-                    style={[styles.shoping]} 
-                    onPress={()=>console.log("continoue shoping")}>
-                    <Text>Continoue Shoping</Text>
-                    </TouchableHighlight>
-
-                    <TouchableHighlight 
-                    underlayColor ={"#fff"} 
-                    style={[styles.checkout]} 
-                    onPress={()=> console.log("checkout")}>
-                    <Text>Proced to Checkout</Text>
-                    </TouchableHighlight>
-                </View>
+            <View style={{ flexDirection : 'row', justifyContent : 'space-around'}}>
+                <TouchableHighlight 
+                underlayColor ={"#fff"} 
+                style={[styles.shoping]} 
+                onPress={()=>console.log("continoue shoping")}>
+                <Text>Continoue Shoping</Text>
+                </TouchableHighlight>
+                <TouchableHighlight 
+                underlayColor ={"#fff"} 
+                style={[styles.checkout]} 
+                onPress={()=> console.log("checkout")}>
+                <Text>Proced to Checkout</Text>
+                </TouchableHighlight>
+            </View>
         </View>
         );
     }

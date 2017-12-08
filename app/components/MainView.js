@@ -9,7 +9,8 @@ import {
     View,
     TextInput,
     AsyncStorage,
-    Image 
+    StatusBar,
+    Image ,
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import IconBadge from 'react-native-icon-badge';
@@ -25,12 +26,18 @@ import Modal from 'react-native-modal';
 
 const { width, height } = Dimensions.get('window')
 let index = 0;
+
 export default class MainView extends Component {
     constructor(props) {
         super(props); 
         this.fetchAllShop = this.fetchAllShop.bind(this); 
-        this.fetchData = this.fetchData.bind(this);       
-      
+        this.fetchData = this.fetchData.bind(this);
+
+        this.getKey= this.getKey.bind(this);
+        
+        // Utils.country()
+        // .then((data) => console.warn(data))
+
         this.state={ 
             dataSource: new ListView.DataSource({   rowHasChanged: (row1, row2) => row1 !== row2 }), 
             dataSource2: new ListView.DataSource({  rowHasChanged: (row1, row2) => row1 !== row2 }), 
@@ -39,15 +46,36 @@ export default class MainView extends Component {
             data : [],
             dataArray: [],
             rows: [],
+            serviceArray: [],
+            servicerows: [],
+            isService: false,
             isModalVisible: false,
-            isLoading: true
+            isLoading: true,
+            u_id: null,
+            country : null
         }
     }
 
     componentDidMount(){
-        this.fetchData();
-        this.fetchAllShop();
-        this.loadData();
+        this.getKey()
+        .then( ()=>this.fetchData())
+        .then( ()=>this.fetchAllShop())
+        .then( ()=>this.loadData())
+        .then( ()=>this.loadServiceData())
+
+    }
+
+    async getKey() {
+        try { 
+            const value = await AsyncStorage.getItem('data'); 
+            var response = JSON.parse(value);  
+            this.setState({ 
+                u_id: response.userdetail.u_id ,
+                country: response.userdetail.country 
+            }); 
+        } catch (error) {
+            console.log("Error retrieving data" + error);
+        }
     }
     modal = () => this.setState({ 
         isModalVisible: !this.state.isModalVisible 
@@ -86,8 +114,6 @@ export default class MainView extends Component {
     }
 
     onClick(data) {
-        // console.warn(JSON.stringify(this.state.dataArray))
-        // console.warn(JSON.stringify(data.u_id))
         var newStateArray = this.state.rows.slice(); 
         newStateArray.push(data.u_id); 
         this.setState({
@@ -146,26 +172,6 @@ export default class MainView extends Component {
 
     sharing(product_id){
         console.warn(product_id);
-        // let formData = new FormData();
-        // formData.append('u_id', String(4));
-        // formData.append('country', String(1)); 
-        // formData.append('product_id', String(product_id)); 
-        // const config = { 
-                // method: 'POST', 
-                // headers: { 
-                    // 'Accept': 'application/json', 
-                    // 'Content-Type': 'multipart/form-data;',
-                // },
-                // body: formData,
-            // }
-        // fetch(Utils.gurl('addToWishlist'), config) 
-        // .then((response) => response.json())
-        // .then((responseData) => {
-            // alert(responseData.data.message);
-            // this.setState({
-            // data: responseData.data
-        // });
-        // }).done();
     }
 
     addtoWishlist(product_id){
@@ -216,10 +222,11 @@ export default class MainView extends Component {
     }
 
 
-    fetchData(){ 
+    fetchData(){
+    const {u_id, country } = this.state; 
         let formData = new FormData();
-        formData.append('u_id', String(4));
-        formData.append('country', String(1));  
+        formData.append('u_id', String(u_id));
+        formData.append('country', String(country));  
 
         const config = { 
             method: 'POST', 
@@ -240,16 +247,8 @@ export default class MainView extends Component {
         });
         }).done();
     }
-    picker (){
-        
-    }
 
     render() {
-
-    // if (this.state.isLoading) {
-      // return <View><Text>Loading...</Text></View>;
-    // }                    // {this.state.myKey}
-
         let listView = (<View></View>);
             listView = (
                 <ListView
@@ -267,6 +266,7 @@ export default class MainView extends Component {
             contentContainerStyle={styles.contentContainer} 
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="always">
+                <StatusBar backgroundColor="blue" barStyle="light-content"/>
                 <View style={{ flexDirection : 'row'}}>
                     <View style={ styles.button,[{ 
                         width : width/2, 
@@ -288,34 +288,14 @@ export default class MainView extends Component {
                         justifyContent : "space-around", 
                         backgroundColor : '#fff', 
                         padding : 2}]}> 
-                        <ModalPicker
-                            data={this.state.data}
-                            initValue="Select something yummy!"
-                            onChange={(option)=>{ this.setState({ 
-                                textInputValue:option.ShopName,
-                                shoperId : option.u_id
-                            })}}>
-
-                            <View style={{ 
-                                flex:1, 
-                                justifyContent : "space-around", 
-                                flexDirection: 'row', 
-                                borderWidth : 0.5, 
-                                borderColor: "#ccc", 
-                                alignItems: 'center'}}>
-                                
-                                <TextInput style={{ width : 150,height: 40 }}
-                                    editable={false}
-                                    placeholder="All Service"
-                                    underlineColorAndroid = 'transparent'
-                                    value={this.state.textInputValue} />
-                                <Ionicons 
-                                name="md-arrow-dropdown" 
-                                size={20} 
-                                color="#87cefa" 
-                                />
-                            </View>
-                        </ModalPicker>
+                        <TouchableOpacity onPress={this.Service} style={styles.allshop}> 
+                            <Text>Services</Text>
+                            <Ionicons 
+                            name="md-arrow-dropdown" 
+                            size={20} 
+                            color="#87cefa" 
+                            />
+                        </TouchableOpacity>
                     </View>
                 </View>
                 <GetMarketing/>
@@ -344,16 +324,122 @@ export default class MainView extends Component {
             </View>
                 </View>
             </Modal>
+
+            <Modal isVisible={this.state.isService}>
+                <View style={styles.container}>
+                <ScrollView>
+                    {this.renderServiceView()}
+                </ScrollView>
+                 <View style={{ flexDirection : 'row', justifyContent : 'space-around'}}>
+                <TouchableOpacity 
+                underlayColor ={"#fff"} 
+                style={[styles.footer]} 
+                onPress={()=>this.Service()}>
+                <Text>Done</Text>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                underlayColor ={"#fff"} 
+                style={[styles.footer]} 
+                onPress={()=> this.cancelService()}>
+                <Text>Cancel</Text>
+                </TouchableOpacity>
+            </View>
+                </View>
+            </Modal>
             </ScrollView>
         );
     }
+
+       // service  filter
+
+    Service = () => this.setState({ isService: !this.state.isService })
+    
+    loadServiceData (){
+        let formData = new FormData();
+        formData.append('u_id', String(1));
+        formData.append('country', String(1));   
+        formData.append('u_id', String(2));   
+        const config = { 
+            method: 'POST', 
+            headers: { 
+                'Accept': 'application/json', 
+                'Content-Type': 'multipart/form-data;',
+            },
+            body: formData,
+        }
+        fetch(Utils.gurl('filterByService'), config) 
+        .then((response) => response.json())
+        .then((responseData) => {
+            this.setState({
+                serviceArray: responseData.data,
+            });
+        })
+        .done();
+    }
+
+    onServiceClick(data) {
+        // console.warn(JSON.stringify(this.state.serviceArray))
+        // console.warn(JSON.stringify(data.u_id))
+        var newStateArray = this.state.servicerows.slice();
+        newStateArray.push(data.service_id); 
+        this.setState({
+            servicerows: newStateArray
+        });
+
+        data.checked = !data.checked;
+        let msg=data.checked? 'you checked ':'you unchecked '
+    }
+
+
+    cancelService(){
+        this.setState({
+            isService : !this.state.isService
+        })
+    }
+
+    renderServiceView() {
+        if (!this.state.serviceArray || this.state.serviceArray.length === 0)return;
+        var len = this.state.serviceArray.length;
+        var views = [];
+        for (var i = 0, l = len - 2; i < l; i += 2) {
+            views.push(
+                <View key={i}>
+                    <View style={styles.item}>
+                        {this.renderServiceChec(this.state.serviceArray[i])}
+                        {this.renderServiceChec(this.state.serviceArray[i + 1])}
+                    </View>
+                </View>
+            )
+        }
+        views.push(
+            <View key={len - 1}>
+                <View style={styles.item}>
+                    {len % 2 === 0 ? this.renderServiceChec(this.state.serviceArray[len - 2]) : null}
+                    {this.renderServiceChec(this.state.serviceArray[len - 1])}
+                </View>
+            </View>
+        )
+        return views;
+
+    }
+
+    renderServiceChec(data) {
+        var leftText = data.service_name;
+        return (
+            <CheckBox
+                style={{flex: 1, padding: 5, borderTopWidth : 1, borderColor : '#ccc'}}
+                onClick={()=>this.onServiceClick(data)}
+                isChecked={data.checked}
+                leftText={leftText}
+            />);
+    }
+
+// Service filter complete here
 
     renderData(data, rowData: string, sectionID: number, rowID: number, index) {
         let color = data.special_price ? '#C5C8C9' : '#000';
         let textDecorationLine = data.special_price ? 'line-through' : 'none';
         
-        // let heartType = data.is_feature ? 'ios-heart-outline' : 'ios-heart';
-
         let heartType
 
         if (data.is_feature == 0) {
@@ -403,8 +489,8 @@ export default class MainView extends Component {
                     justifyContent: 'space-between',
                     top : 5
                 }}> 
-                    <Text style={styles.special_price}>{data.special_price}Aed</Text>
-                    <Text style={{fontSize:10, color: color, textDecorationLine: textDecorationLine}}>{data.price}Aed</Text>
+                    <Text style={styles.special_price}>{data.special_price} Aed</Text>
+                    <Text style={{fontSize:10, color: color, textDecorationLine: textDecorationLine}}>{data.price} Aed</Text>
                 </View>
                 </View>
             </View>
