@@ -9,32 +9,56 @@ import {
     ScrollView, 
     Dimensions, 
     TextInput,
+    AsyncStorage,
+    Picker,
     Image 
 } from 'react-native';
 import Swipeout from 'react-native-swipeout';
 import Utils from 'app/common/Utils';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { MessageBar, MessageBarManager } from 'react-native-message-bar';
 
 const { width, height } = Dimensions.get('window');
 
 export default class WishList extends Component {
     constructor(props) { 
         super(props); 
-        const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}); 
+        this.fetchData = this.fetchData.bind(this);
+        this.getKey = this.getKey.bind(this);        
         this.state = { 
-            dataSource: ds.cloneWithRows(['row 1', 'row 2']), 
+            dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}), 
             Quentity : 0,
+            u_id: null,
+            country : null,
+            size: '', 
+            color: '', 
         }; 
     } 
     componentDidMount(){
-        this.fetchData();
+        this.getKey()
+        .then( ()=>this.fetchData())
+        .done()
+    }
+    
+    async getKey() {
+        try { 
+            const value = await AsyncStorage.getItem('data'); 
+            var response = JSON.parse(value);  
+            this.setState({ 
+                u_id: response.userdetail.u_id ,
+                country: response.userdetail.country 
+            }); 
+        } catch (error) {
+            console.log("Error retrieving data" + error);
+        }
     }
 
     fetchData(){ 
+        const {u_id, country, user_type } = this.state;
         let formData = new FormData();
-        formData.append('u_id', String(4));
-        formData.append('country', String(1));  
+        formData.append('u_id', String(u_id));
+        formData.append('country', String(country));  
 
         const config = { 
             method: 'POST', 
@@ -45,7 +69,100 @@ export default class WishList extends Component {
             body: formData,
         } 
 
-        fetch(Utils.gurl('wishlistDetail'), config) 
+        fetch(Utils.gurl('wishlist'), config) 
+        .then((response) => response.json())
+        .then((responseData) => {
+
+            this.setState({
+                dataSource: this.state.dataSource.cloneWithRows(responseData.data),
+                refreshing : false
+        });
+        }).done();
+    }
+
+    addtoCart(count){
+    const { size, color,  } = this.state; 
+        const {u_id, country, user_type } = this.state;
+
+        let formData = new FormData();
+        formData.append('u_id', String(u_id));
+        formData.append('country', String(country)); 
+        formData.append('product_id', String(this.props.product_id)); 
+        formData.append('size', String(size)); 
+        formData.append('color', String(color)); 
+        formData.append('quantity', String(count)); 
+
+        const config = { 
+            method: 'POST', 
+            headers: { 
+                'Accept': 'application/json', 
+                'Content-Type': 'multipart/form-data;',
+            },
+            body: formData,
+        }
+        
+        fetch(Utils.gurl('addTocart'), config) 
+        .then((response) => response.json())
+        .then((responseData) => {
+
+            MessageBarManager.showAlert({ 
+                message: responseData.data.message, 
+                alertType: 'alert', 
+                stylesheetWarning : { backgroundColor : '#87cefa', strokeColor : '#fff' },
+                // animationType: 'SlideFromLeft',
+            })
+
+            // this.setState({ 
+                // imgList: responseData.data.productImages,
+                // data : responseData.data
+        // });
+        })
+        .done();
+    }
+
+    removeWishlist(product_id){
+        const {u_id, country, user_type } = this.state;
+        let formData = new FormData();
+        formData.append('u_id', String(u_id));
+        formData.append('country', String(country));  
+        formData.append('product_id', String(product_id));
+
+        const config = { 
+            method: 'POST', 
+            headers: { 
+                'Accept': 'application/json', 
+                'Content-Type': 'multipart/form-data;',
+            },
+            body: formData,
+        } 
+
+        fetch(Utils.gurl('removeFromWishlist'), config) 
+        .then((response) => response.json())
+        .then((responseData) => {
+
+            this.setState({
+                dataSource: this.state.dataSource.cloneWithRows(responseData.data),
+                refreshing : false
+        });
+        }).done();
+    }
+    editWishlist(product_id){
+        const {u_id, country, user_type } = this.state;
+        let formData = new FormData();
+        formData.append('u_id', String(u_id));
+        formData.append('country', String(country));  
+        formData.append('product_id', String(product_id));
+
+        const config = { 
+            method: 'POST', 
+            headers: { 
+                'Accept': 'application/json', 
+                'Content-Type': 'multipart/form-data;',
+            },
+            body: formData,
+        } 
+
+        fetch(Utils.gurl('removeFromWishlist'), config) 
         .then((response) => response.json())
         .then((responseData) => {
 
@@ -79,6 +196,12 @@ export default class WishList extends Component {
                 showsVerticalScrollIndicator={false}
                 />
             );
+
+            if ( this.state.dataSource && this.state.dataSource.length == 0 ) {
+                return (
+                <Text> No data </Text>);
+            }
+        
         return (
         <View>
         {listView}
@@ -86,20 +209,25 @@ export default class WishList extends Component {
         );
     }
     renderData( data, rowData: string, sectionID: number, rowID: number, index) {
-    // console.warn(data); 
         let color = data.special_price ? '#C5C8C9' : '#000';
         let textDecorationLine = data.special_price ? 'line-through' : 'none';
+
+        if ( !data.special_price) {
+            return (
+                <Text> No Item added to your wishlist </Text>
+                );
+        }
 
         let swipeBtns = [{
             text: 'Edit',
             backgroundColor: '#ccc',
             underlayColor: 'rgba(0, 0, 0, 1, 0.6)',
-            onPress: () => {}
+            onPress: () => {this.editWishlist(data.product_id)}
          },{
             text: 'Delete',
             backgroundColor: '#deb887',
             underlayColor: 'rgba(0, 0, 0, 1, 0.6)',
-            onPress: () => {  }
+            onPress: () => {this.removeWishlist(data.product_id)}
          }];
         return (
             <View style={{ 
@@ -119,7 +247,8 @@ export default class WishList extends Component {
                             backgroundColor : "#fff"}}>
                             
                             <Image style={[styles.thumb, {margin: 10}]} 
-                            source={{ uri : data.image}}/>
+                            source={{ uri : data.productImages[0] ? data.productImages[0].image : null}}
+                            />
     
                                 <View style={{flexDirection: 'column', justifyContent : 'space-between'}}>  
                                     <TouchableHighlight
@@ -132,7 +261,7 @@ export default class WishList extends Component {
                                     </TouchableHighlight>
                                         <View style={{ flexDirection : "row"}}>
                                         
-                                            <Text> Quentity : {sectionID} </Text>
+                                            <Text> Quentity :  </Text>
                                             <TouchableOpacity 
                                                 style={styles.qtybutton} 
                                                 onPress={(Quentity)=> this.setState({Quentity : this.state.Quentity -1})}>
@@ -141,24 +270,49 @@ export default class WishList extends Component {
                                             
                                             </TouchableOpacity>
                                             
-                                            <Text style={[styles.qtybutton, {color : "#87cefa"}]}> { this.state.Quentity } </Text>
+                                            <Text style={[styles.qtybutton, {color : "#87cefa"}]}> { this.state.Quentity ? this.state.Quentity : data.quantity[sectionID] } </Text>
                                             
                                             <TouchableOpacity 
                                                 style={styles.qtybutton} 
-                                                onPress={(Quentity)=> this.setState({Quentity: this.state.Quentity +1 })}>
+                                                onPress={(Quentity)=> this.setState({Quentity: parseInt(data.quantity[sectionID]) +1 })}>
                                                 
                                                 <Text> +</Text>
                                             
                                             </TouchableOpacity>
                                         
                                         </View>
+
                                         <Text >US $ : {data.special_price} </Text>
                                         <View style={{ flexDirection : "row"}}>
                                         <Text style={{fontSize:15, color: color, textDecorationLine: textDecorationLine}}> US $ {data.price}  </Text>
                                         <Text>| {data.special_price}</Text>
                                         </View>
                                         <Text > Total :{data.price} </Text>
+                                        <View style={{ flexDirection:'row'}}>
+                                        <Picker
+                            mode="dropdown"
+                            style={{width: width/3, height: 40, backgroundColor: '#fff'}}
+                            selectedValue={this.state.size}
+                            onValueChange={(itemValue, itemIndex) => this.setState({size: itemValue})}>
+                                <Picker.Item label="Select Size" value="" />
+                                <Picker.Item label="Small" value="small" />
+                                <Picker.Item label="Medium" value="medium" />
+                                <Picker.Item label="Large" value="large" />
+                            </Picker>
+                            <Picker 
+                            mode="dropdown"
+                            style={{width: width/3, height: 40, backgroundColor: '#fff'}}
+                            selectedValue={this.state.color}
+                            onValueChange={(itemValue, itemIndex) => this.setState({color: itemValue})}>
+                                <Picker.Item label="Select color" value="" />
+                                <Picker.Item label="Red" value="red" />
+                                <Picker.Item label="Yellow" value="yellow" />
+                                <Picker.Item label="Pick" value="pink" />
+                            </Picker>
+                            </View>
                                     </View>
+
+
                                 </View>
                                 
                 </Swipeout>
@@ -168,7 +322,8 @@ export default class WishList extends Component {
                         <SimpleLineIcons name="share-alt" size={20} color="#a52a2a"/>
                             <Text style={{ left : 5}}>Share WishList</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={[styles.wishbutton, {flexDirection : 'row', justifyContent: "center"}]}>
+                        <TouchableOpacity style={[styles.wishbutton, {flexDirection : 'row', justifyContent: "center"}]} 
+                        onPress={()=>this.addtoCart(data.quantity[sectionID])}>
                             <FontAwesome name="opencart" size={20} color="#a52a2a"/> 
                             <Text style={{ left :5}}>Move to Cart</Text>
                         </TouchableOpacity>

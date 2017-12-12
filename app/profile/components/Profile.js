@@ -1,28 +1,55 @@
 import React, {Component, PropTypes} from "react";
-import {View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import {View, Text, StyleSheet, TouchableOpacity, AsyncStorage } from "react-native";
 import { Actions} from "react-native-router-flux";
 
 import Entypo from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Utils from 'app/common/Utils';
 
-const u_id = '2';
-const country = '1';
-const address_type = '1';
-
 class Profile extends Component {
 	constructor(props) {
-        super(props);        
+        super(props);
+        this.getKey = this.getKey.bind(this);        
         this.state={
-        	data: ''
+        	data: '',
+            u_id: null,
+            country : null,
+            email : null,
+            phone_no : null
         };
     }
 
     componentDidMount(){
-    	this.getAddress();
+	    this.getKey()
+	    .then(this.getAddress())
+	    .done()
+    }
+
+    // componentWillUpdate(){
+	   //  this.getKey()
+	   //  .then(this.getAddress())
+    // }
+
+    async getKey() {
+        try { 
+            const value = await AsyncStorage.getItem('data'); 
+            var response = JSON.parse(value);
+
+            this.setState({ 
+                u_id: response.userdetail.u_id ,
+                email: response.userdetail.email,
+                phone_no: response.userdetail.phone_no,
+                country: response.userdetail.country 
+            }); 
+        } catch (error) {
+            console.log("Error retrieving data" + error);
+        }
     }
 
     getAddress(){
+
+    	const { u_id, country } = this.state;
+
     	let formData = new FormData();
     	formData.append('u_id', String(u_id));
     	formData.append('country', String(country)); 
@@ -46,7 +73,7 @@ class Profile extends Component {
 
 	render() {
 		const {identity, logout} = this.props;
-		const {data} = this.state;
+		const {data, u_id} = this.state;
 		return (
 			<View style={{flex: 1, flexDirection: 'column'}} testID="Profile">
 				<View style={[styles.content, {flexDirection : 'row', justifyContent: 'space-between' ,padding : 0}]}>
@@ -69,8 +96,8 @@ class Profile extends Component {
 
 						<View style={{flexDirection : 'column'}}>
 							<Text style={[styles.label, { color : '#ccc'}]}>{identity.username}</Text>
-							<Text style={[styles.label, { color : '#ccc'}]}>abhishek.ebiztrait@gmail.com</Text>
-							<Text style={[styles.label, { color : '#ff6347'}]}>Contact: {identity.username}</Text>
+							<Text style={[styles.label, { color : '#ccc'}]}>{this.state.email}</Text>
+							<Text style={[styles.label, { color : '#ff6347'}]}>Contact: {this.state.phone_no}</Text>
 						</View>
 					</View>
 
@@ -81,13 +108,13 @@ class Profile extends Component {
 				
 				<View style={[styles.content, {flexDirection : 'row', justifyContent: 'space-between' ,padding : 0}]}>
 
-					<View style={{ padding : 20}}>
-					<View style={{ flexDirection : 'row', justifyContent: 'space-between', paddingRight:10, paddingLeft:10,  }}>
-						<Text style={{ fontSize : 10, color:"#900"}}>My Address Book</Text>
-							<TouchableOpacity style={{ justifyContent: 'center', alignItems : 'center' }} onPress={()=>Actions.addressbook()} >
-								<Ionicons name="ios-arrow-forward" size={25} color="#ccc"/>
-							</TouchableOpacity >
-					</View>
+					<View style={{ padding : 20, backgroundColor : '#fff', flex : 1}}>
+						<View style={{ flexDirection : 'row', justifyContent: 'space-between', paddingRight:10, paddingLeft:10,  }}>
+							<Text style={{ fontSize : 10, color:"#900"}}>My Address Book</Text>
+								<TouchableOpacity style={{ justifyContent: 'center', alignItems : 'center' }} onPress={()=>Actions.addressbook()} >
+									<Ionicons name="ios-arrow-forward" size={25} color="#ccc"/>
+								</TouchableOpacity >
+						</View>
 					
 					<Text style={{ fontSize: 15}}>
 					{data.full_name}

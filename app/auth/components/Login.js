@@ -34,13 +34,6 @@ class Login extends Component {
 
 		};
 	}
-	componentDidMount() {
-    MessageBarManager.registerMessageBar(this.refs.alert);
-	}
-
-  componentWillUnmount() {
-    MessageBarManager.unregisterMessageBar();
-  }
 
 	render() {
 		const {errorStatus, loading} = this.props;
@@ -107,7 +100,6 @@ class Login extends Component {
   					title="Create An Acount"
   					color="orange"
   					/>
-  					<MessageBar ref="alert" />
 			</View>
 		);
 	}
@@ -117,8 +109,16 @@ class Login extends Component {
 
 	onSubmit() {
 		const {email, password, os} = this.state;
+			email.length ? null : alert('email empty')
+		password.length ? null : alert('password empty')
+			
+		if (email.length && password.length) {
 		this.setState({...INITIAL_STATE, loading: true});
 		this.props.login(email, password, os);
+			}
+
+		// this.setState({...INITIAL_STATE, loading: true});
+		// this.props.login(email, password, os);
 	}
 }
 

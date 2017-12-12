@@ -53,7 +53,8 @@ const loginSuccess = (username, password, os) => {
 	    	       		"phone_no" : responseData.response.data.phone_no ,
 	    	       		"country" : responseData.response.data.country ,
 	    	       		"address" : responseData.response.data.address ,
-	    	       		"u_name" : responseData.response.data.is_active 
+	    	       		"u_name" : responseData.response.data.is_active ,
+	    	       		"user_type" : responseData.response.data.user_type 
         	    	}
         	    }));
     	 if (responseData.response.status) { 

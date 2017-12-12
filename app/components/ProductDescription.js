@@ -6,8 +6,11 @@ import {
   Dimensions,
   ScrollView,
   TouchableOpacity,
-  TextInput
+  TextInput,
+  AsyncStorage,
+  Picker
 } from 'react-native';
+import { MessageBar, MessageBarManager } from 'react-native-message-bar';
 
 import Swiper from 'react-native-swiper';
 import { BubblesLoader } from 'react-native-indicator';
@@ -29,7 +32,14 @@ export default class ProductDescription extends Component {
             count : 1,
             date_in: new Date(), 
             date_out:new Date(),
-            address : '' 
+            address : '',
+            u_id: null,
+            country : null,
+            user_type: null,
+            size: '', 
+            color: '', 
+            quantity:'',
+
         }
         this.loadHandle = this.loadHandle.bind(this)
     }
@@ -42,8 +52,25 @@ export default class ProductDescription extends Component {
         })
     }
     componentDidMount(){
-        this.fetchData()
+        this.getKey()
+        .then( ()=>this.fetchData())
+        .done()
     }
+
+    async getKey() {
+        try { 
+            const value = await AsyncStorage.getItem('data'); 
+            var response = JSON.parse(value);  
+            this.setState({ 
+                u_id: response.userdetail.u_id ,
+                country: response.userdetail.country ,
+                user_type: response.userdetail.user_type 
+            }); 
+        } catch (error) {
+            console.log("Error retrieving data" + error);
+        }
+    }
+
     async openAndroidDatePicker() { 
         try { 
             const {action, year, month, day} = await DatePickerAndroid.open({ 
@@ -54,15 +81,15 @@ export default class ProductDescription extends Component {
         }
     }
     addtoCart(){
-    const { size, color, quantity , product_id} = this.state; 
-
+    const { size, color, count } = this.state; 
+        const {u_id, country, user_type } = this.state;
         let formData = new FormData();
-        formData.append('u_id', String(4));
-        formData.append('country', String(1)); 
+        formData.append('u_id', String(u_id));
+        formData.append('country', String(country)); 
         formData.append('product_id', String(this.props.product_id)); 
         formData.append('size', String(size)); 
         formData.append('color', String(color)); 
-        formData.append('quantity', String(quantity)); 
+        formData.append('quantity', String(count)); 
 
         const config = { 
             method: 'POST', 
@@ -76,6 +103,14 @@ export default class ProductDescription extends Component {
         fetch(Utils.gurl('addTocart'), config) 
         .then((response) => response.json())
         .then((responseData) => {
+
+            MessageBarManager.showAlert({ 
+                message: responseData.data.message, 
+                alertType: 'alert', 
+                stylesheetWarning : { backgroundColor : '#87cefa', strokeColor : '#fff' },
+                // animationType: 'SlideFromLeft',
+            })
+
             // this.setState({ 
                 // imgList: responseData.data.productImages,
                 // data : responseData.data
@@ -85,9 +120,11 @@ export default class ProductDescription extends Component {
     }
 
     fetchData(){ 
+                const {u_id, country, user_type } = this.state;
+
         let formData = new FormData();
-        formData.append('u_id', String(4));
-        formData.append('country', String(1)); 
+        formData.append('u_id', String(user_type));
+        formData.append('country', String(country)); 
         formData.append('product_id', String(this.props.product_id)); 
 
         const config = { 
@@ -113,6 +150,9 @@ export default class ProductDescription extends Component {
     sizechart(){
         console.warn("size chart");
     }
+    buyNow(){
+
+    }
     onSubmit () {
 
     }
@@ -121,8 +161,8 @@ export default class ProductDescription extends Component {
         const { date_in, count } = this.state;
         let color = this.state.data.special_price ? '#C5C8C9' : '#000';
         let textDecorationLine = this.state.data.special_price ? 'line-through' : 'none';
-        let colorOffer = this.state.data.special_price ? 'orange' : '#fff'; 
-        if(count <= 0) { console.warn(count); }
+        let colorOffer = this.state.data.special_price ? 'orange' : '#fff';
+
         return ( 
             <ScrollView 
                 keyboardShouldPersistTaps="always"
@@ -144,32 +184,50 @@ export default class ProductDescription extends Component {
                             <Text style={{color: colorOffer, left : 30}}>({this.state.data.discount} %OFF )</Text>
                         </View>
                         <View style={{ flexDirection : 'row'}}>
-                            <TouchableOpacity style={styles.button}>
+                            <TouchableOpacity style={styles.button} onPress={()=>this.buyNow()}>
                             <Text>Buy It Now</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.buttonCart}>
+                            <TouchableOpacity style={styles.buttonCart} onPress={()=> this.addtoCart()}>
                             <Text>Add To Cart</Text>
                             </TouchableOpacity>
                         </View>
-                        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                            <TouchableOpacity style={{flexDirection : 'row'}}>
-                            <Ionicons name="select-all" size={25} color="orange"/><Text style={{color: 'skyblue'}}>Select Size</Text></TouchableOpacity>
+                        <View>
+                            <Picker
+                            mode="dropdown"
+                            style={{width: width, height: 40, backgroundColor: '#fff'}}
+                            selectedValue={this.state.size}
+                            onValueChange={(itemValue, itemIndex) => this.setState({size: itemValue})}>
+                                <Picker.Item label="Select Size" value="" />
+                                <Picker.Item label="Small" value="small" />
+                                <Picker.Item label="Medium" value="medium" />
+                                <Picker.Item label="Large" value="large" />
+                            </Picker>
+                            <Picker 
+                            mode="dropdown"
+                            style={{width: width, height: 40, backgroundColor: '#fff'}}
+                            selectedValue={this.state.color}
+                            onValueChange={(itemValue, itemIndex) => this.setState({color: itemValue})}>
+                                <Picker.Item label="Select color" value="" />
+                                <Picker.Item label="Red" value="red" />
+                                <Picker.Item label="Yellow" value="yellow" />
+                                <Picker.Item label="Pick" value="pink" />
+                            </Picker>
                         </View>
                         <View style={{flexDirection: 'row'}}>
     
-                            <Button onPress={() => this.onSubmit()} testID="LoginButton">
+                            <Button onPress={() => this.setState({ Size: '7'})} testID="LoginButton">
                             7-8 Y
                             </Button>
-                            <Button onPress={() => this.onSubmit()} testID="LoginButton">
+                            <Button onPress={() => this.setState({ Size: '8'})} testID="LoginButton">
                             8-9 Y
                             </Button>
-                            <Button onPress={() => this.onSubmit()} testID="LoginButton">
+                            <Button onPress={() => this.setState({ Size: '9'})} testID="LoginButton">
                             9-10 Y
                             </Button>
-                            <Button onPress={() => this.onSubmit()} testID="LoginButton">
+                            <Button onPress={() => this.setState({ Size: '10'})} testID="LoginButton">
                             10-11 Y
                             </Button>
-                            <Button onPress={() => this.onSubmit()} testID="LoginButton">
+                            <Button onPress={() => this.setState({ Size: '11'})} testID="LoginButton">
                             11-12 Y
                             </Button>
                         </View>

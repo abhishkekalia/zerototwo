@@ -1,5 +1,14 @@
 import React, {Component, PropTypes} from "react";
-import {View, Text, StyleSheet, TouchableOpacity, UIManager, findNodeHandle, Dimensions, ListView } from "react-native";
+import { 
+  View, 
+  Text, 
+  StyleSheet, 
+  TouchableOpacity, 
+  UIManager, 
+  findNodeHandle, 
+  Dimensions, 
+  ListView 
+} from "react-native";
 
 import Entypo from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -11,25 +20,49 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 const { width } = Dimensions.get('window')
 const ICON_SIZE = 24
 
-const u_id = '2';
-const country = '1';
-const address_type = '1';
+// const u_id = '2';
+// const country = '1';
+// const address_type = '1';
 
 export default class AddressBook extends Component {
      constructor(props) {
-        super(props);        
+        super(props);
+        this.getKey = this.getKey.bind(this);      
         this.state={
-          dataSource: new ListView.DataSource({   rowHasChanged: (row1, row2) => row1 !== row2 }), 
+            dataSource: new ListView.DataSource({   rowHasChanged: (row1, row2) => row1 !== row2 }), 
+            u_id: null,
+            country : null
         };
      }
 
      componentDidMount(){
-          this.fetchAddress();
+        this.getKey()
+        .then( ()=>this.fetchAddress())
+        .done()
+
      }
+
      componentWillUpdate(){
           this.fetchAddress();
      }
+
+     async getKey() {
+        try { 
+            const value = await AsyncStorage.getItem('data'); 
+            var response = JSON.parse(value);  
+            this.setState({ 
+                u_id: response.userdetail.u_id ,
+                country: response.userdetail.country 
+            }); 
+        } catch (error) {
+            console.log("Error retrieving data" + error);
+        }
+    }country
+
+
      fetchAddress(){
+                const { u_id, country } = this.state;
+
           let formData = new FormData();
           formData.append('u_id', String(u_id));
           formData.append('country', String(country)); 
@@ -45,7 +78,7 @@ export default class AddressBook extends Component {
           fetch(Utils.gurl('addressList'), config)  
           .then((response) => response.json())
           .then((responseData) => { 
-                           // console.warn(JSON.stringify(responseData));
+                           console.warn(JSON.stringify('responseData'));
 
                this.setState({ 
                 dataSource: this.state.dataSource.cloneWithRows(responseData.data),

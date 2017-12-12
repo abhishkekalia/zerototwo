@@ -3,7 +3,8 @@ import {
     ListView,
     TouchableOpacity, 
     StyleSheet,
-    Dimensions, 
+    Dimensions,
+    AsyncStorage, 
     Text, 
     View,
     Image 
@@ -19,7 +20,9 @@ export default class AllItem extends Component {
         super(props);        
         this.state={ 
             dataSource: new ListView.DataSource({   rowHasChanged: (row1, row2) => row1 !== row2 }), 
-            dataSource2: new ListView.DataSource({  rowHasChanged: (row1, row2) => row1 !== row2 }), 
+            dataSource2: new ListView.DataSource({  rowHasChanged: (row1, row2) => row1 !== row2 }),
+            u_id: null,
+            country : null
         }
     }
 
@@ -30,7 +33,8 @@ export default class AllItem extends Component {
     // };
 
     componentDidMount(){
-        this.fetchData()
+        this.getKey()
+        .then( ()=>this.fetchData())
     }
 
     blur() {
@@ -43,11 +47,25 @@ export default class AllItem extends Component {
         dataSource && dataSource.focus();
     }
 
+    async getKey() {
+        try { 
+            const value = await AsyncStorage.getItem('data'); 
+            var response = JSON.parse(value);  
+            this.setState({ 
+                u_id: response.userdetail.u_id ,
+                country: response.userdetail.country 
+            }); 
+        } catch (error) {
+            console.log("Error retrieving data" + error);
+        }
+    }
+
 
     fetchData(){ 
+        const {u_id, country } = this.state; 
         let formData = new FormData();
-        formData.append('u_id', String(2));
-        formData.append('country', String(1)); 
+        formData.append('u_id', String(u_id));
+        formData.append('country', String(country)); 
 
     const config = { 
                 method: 'POST', 
@@ -57,7 +75,7 @@ export default class AllItem extends Component {
                 },
                 body: formData,
             }
-    fetch(Utils.gurl('productListView'), config) 
+    fetch(Utils.gurl('allProductItemList'), config) 
         .then((response) => response.json())
         .then((responseData) => {
             this.setState({
@@ -95,7 +113,7 @@ export default class AllItem extends Component {
                 <IconBadge
                     MainElement={ 
                         <Image style={styles.thumb} 
-                            source={{ uri : data.productImage}}/>                        }
+                                source={{ uri : data.productImages[0] ? data.productImages[0].image : null }}/>                        }
                     BadgeElement={
                       <Text style={{color:'#FFFFFF', fontSize: 10}}>{data.discount} %off</Text>
                     }

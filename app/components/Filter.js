@@ -64,7 +64,6 @@ export default class Filter extends Component {
 
 
     render() {
-// console.warn(JSON.stringify(this.state.selected))
         let border = this.state.button ? 1 : undefined;
         let borderleft = this.state.button ? 2 : 5;
         let bcolor = this.state.button ? "#ccc" : "orange";
@@ -105,7 +104,7 @@ export default class Filter extends Component {
                     <TouchableHighlight 
                     underlayColor ={"#fff"} 
                     style={[styles.apply]} 
-                    onPress={()=>Actions.filterdBy}>
+                    onPress={()=>Actions.filterdBy({ filterdBy : this.state.selected})}>
                         <MaterialIcons name="done" size={20} color="#fff"/>
                     </TouchableHighlight>
                 </View>       

@@ -15,7 +15,7 @@ export default class CustomNavBar extends React.Component {
             onPress={Actions.pop}
             style={[styles.navBarItem, { paddingLeft: 10}]}>
                 <Entypo name="cross" 
-                size={20  } 
+                size={30} 
                 color="#fff"
                 />
             </TouchableOpacity>
@@ -25,7 +25,7 @@ export default class CustomNavBar extends React.Component {
     _renderMiddle() { 
         return (
             <View style={styles.navBarItem}>
-                <Text style={{color: '#fff'}}>Filters</Text>
+                <Text style={{color: '#fff' , fontSize: 15}}>Filters</Text>
             </View>
         )
     }
@@ -37,7 +37,7 @@ export default class CustomNavBar extends React.Component {
                 onPress={() => console.warn('refresh')}
                 style={{ paddingRight: 10 }}>
                     <Ionicons name="ios-refresh" 
-                    size={20} 
+                    size={30} 
                     color="#fff"/>
                 </TouchableOpacity>
             </View>
@@ -58,7 +58,7 @@ export default class CustomNavBar extends React.Component {
 
 const styles = StyleSheet.create({ 
     container: { 
-        height: (Platform.OS === 'ios') ? 40 : 40, 
+ height: (Platform.OS === 'ios') ? 64 : 54, 
         flexDirection: 'row'
     }, 
     navBarItem: { 

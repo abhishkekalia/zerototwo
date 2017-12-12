@@ -8,7 +8,7 @@ export default StyleSheet.create({
 	},
 	content: {
 		flex: 1,
-		padding: 30
+		padding: 20
 	},
 	iconusername : {
     	flexDirection: 'row', 
@@ -32,12 +32,14 @@ export default StyleSheet.create({
     	paddingLeft: 0,
     	backgroundColor: '#fff',
     	color: '#424242',
+    	left : 10
     },
 	inputpassword: {
 		flex: 1,
     	paddingLeft: 0,
     	backgroundColor: '#fff',
     	color: '#424242',
+    	left : 10
 	},
 
 	label: {
@@ -52,6 +54,14 @@ export default StyleSheet.create({
 		padding: 5,
 		fontWeight: "700",
 		fontStyle: 'italic'
+	},
+	show :{
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
+   	borderBottomWidth: 0.5,
+	borderColor: 'red',
+
 	},
 	registerContent : { 
 		borderColor: 'red',

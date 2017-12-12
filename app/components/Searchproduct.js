@@ -3,12 +3,15 @@ import {
     ListView,
     TouchableOpacity, 
     StyleSheet,
-    Dimensions, 
+    Dimensions,
+    AsyncStorage, 
     Text, 
     View,
     Image 
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
+import EvilIcons from 'react-native-vector-icons/EvilIcons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import IconBadge from 'react-native-icon-badge';
 import Utils from 'app/common/Utils';
 const { width, height } = Dimensions.get('window')
@@ -16,14 +19,19 @@ const { width, height } = Dimensions.get('window')
 
 export default class Searchproduct extends Component {
     constructor(props) {
-        super(props);        
-        this.state = 
-        { 
-            dataSource: new ListView.DataSource({   rowHasChanged: (row1, row2) => row1 !== row2 }), 
+        super(props);
+        this.getKey = this.getKey.bind(this);             
+        this.state = { 
+            dataSource: new ListView.DataSource({   rowHasChanged: (row1, row2) => row1 !== row2 }),
+            u_id: null,
+            country : null ,
+            user_type: null
         }
     }
     componentDidMount(){
-        this.fetchData()
+        this.getKey()
+        .then( ()=>this.fetchData())
+        .done()
     }
 
     blur() {
@@ -36,13 +44,31 @@ export default class Searchproduct extends Component {
         dataSource && dataSource.focus();
     }
 
+    async getKey() {
+        try { 
+            const value = await AsyncStorage.getItem('data'); 
+            var response = JSON.parse(value);  
+            this.setState({ 
+                u_id: response.userdetail.u_id ,
+                country: response.userdetail.country ,
+                user_type: response.userdetail.user_type 
+            }); 
+        } catch (error) {
+            console.log("Error retrieving data" + error);
+        }
+    }
+
+
 
     fetchData(){ 
+        const { filterdBy, vendor } = this.props;
+        const {u_id, country, user_type } = this.state;
+
         let formData = new FormData();
-        formData.append('u_id', String(2));
-        formData.append('country', String(1)); 
+        formData.append('u_id', String(user_type));
+        formData.append('country', String(country)); 
         formData.append('category_id', String([2,3])); 
-        formData.append('vendor_id', String  ([4,6])); 
+        formData.append('vendor_id', String  (vendor)); 
 
     const config = { 
                 method: 'POST', 
@@ -55,7 +81,7 @@ export default class Searchproduct extends Component {
     fetch(Utils.gurl('filterProducts'), config) 
         .then((response) => response.json())
         .then((responseData) => {
-        console.warn(JSON.stringify(responseData))
+        // console.warn(JSON.stringify(responseData))
 
             this.setState({
                 dataSource: this.state.dataSource.cloneWithRows(responseData.data),
@@ -86,38 +112,84 @@ export default class Searchproduct extends Component {
 
     renderData(data, rowData: string, sectionID: number, rowID: number, index) {
             let color = data.special_price ? '#C5C8C9' : '#000';
-            let textDecorationLine = data.special_price ? 'line-through' : 'none';
+        let textDecorationLine = data.special_price ? 'line-through' : 'none';
+        
+        let heartType
+
+        if (data.is_feature == 0) {
+            heartType = 'ios-heart-outline'; 
+        } else {
+            heartType = 'ios-heart' ;
+        }
         return (
-            <TouchableOpacity style={styles.row} onPress={Actions.deascriptionPage}> 
-                <IconBadge
-                    MainElement={ 
-                        <Image style={styles.thumb} 
-                            source={{ uri : data.productImage}}/>                        }
-                    BadgeElement={
-                      <Text style={{color:'#FFFFFF', fontSize: 10}}>{data.discount} %off</Text>
-                    }
-                    IconBadgeStyle={{
-                        width:50,
-                        height:16,
-                        top : height/5-10,
-                        left: 0,
-                        backgroundColor: '#87cefa'}}/>
-                <Text style={styles.name}>{data.product_name}</Text>
+            <View style={styles.row} > 
+                <View style={{flexDirection: 'row', justifyContent: "center"}}>
+                    <IconBadge
+                        MainElement={ 
+                            <Image style={styles.thumb} 
+                                source={{ uri : data.productImages[0] ? data.productImages[0].image : null }}/>                        }
+                        BadgeElement={
+                            <Text style={{color:'#FFFFFF', fontSize: 10, position: 'absolute'}}>{data.discount} %off</Text>
+                        }
+                        IconBadgeStyle={{
+                            width:50,
+                            height:16,
+                            top : width/3-10,
+                            left: 0,
+                            position : 'absolute',
+                            backgroundColor: '#87cefa'}}
+                    />
+                    <EvilIcons style={{ position : 'absolute', left : 0}} 
+                        name="share-google" 
+                        size={20} 
+                        color="#ccc" 
+                        onPress={()=> this.sharing(data.product_id)}/>
+
+                    <TouchableOpacity 
+                    onPress={()=> this.addtoWishlist(data.product_id)}
+                    style={{ 
+                        left : width/3-35, 
+                        position : 'absolute',
+                        width : 50,
+                        height :50
+                    }}
+                    >
+                        <Ionicons  
+                        name={heartType} 
+                        size={20} 
+                        color="#87cefa" 
+                        />
+                    </TouchableOpacity>
+                </View>
+                
+                <View style={{ padding :5}}>
+                <TouchableOpacity  style={styles.name} onPress={()=>Actions.deascriptionPage({product_id : data.product_id})}>
+
+                <Text style={{fontSize : 13, color :'#000'}}>{data.product_name}</Text>
+                </TouchableOpacity>
                 <Text style={styles.description}>{data.short_description}</Text>
                 <View style={{
                     flex: 0, 
                     flexDirection: 'row', 
                     justifyContent: 'space-between',
-                    top : 5}}> 
-                    <Text style={styles.special_price}>{data.special_price}Aed</Text>
-                    <Text style={{fontSize:10, color: color, textDecorationLine: textDecorationLine}}>{data.price}Aed</Text>
+                    top : 5
+                }}> 
+                    <Text style={styles.special_price}>{data.special_price} Aed</Text>
+                    <Text style={{fontSize:10, color: color, textDecorationLine: textDecorationLine}}>{data.price} Aed</Text>
                 </View>
-            </TouchableOpacity>
+                </View>
+            </View>
         );
     }
 }
 
 var styles =StyleSheet.create({
+container: {
+        // flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#F5FCFF'
+    },
     list: {
         // borderWidth: 1, 
         // borderColor: '#CCC',
@@ -125,9 +197,7 @@ var styles =StyleSheet.create({
         flexWrap: 'wrap'
     },
     name : {
-        fontSize : 10,
         top : 5
-
     },
     description : {
         fontSize : 7,
@@ -137,27 +207,51 @@ var styles =StyleSheet.create({
         fontSize : 10,
         fontWeight : 'bold'
     },
+    footer : {
+        width : width/2-20,
+        alignItems : 'center',
+        padding : 10
+    },
+    allshop :{ 
+        flex:1, 
+        justifyContent : "space-around", 
+        flexDirection: 'row', 
+        borderWidth : 0.5, 
+        borderColor: "#ccc", 
+        alignItems: 'center'
+    },
 
     row: {
-        // flex: 1,
         flexDirection: 'column',
         justifyContent: 'space-between',
         width : width/3 -7,
-
-        padding: 5,
+        // padding: 5,
         margin: 3,
-      borderWidth: 1,
-        borderColor: '#CCC'
+        borderWidth: 1,
+        borderColor: '#CCC',
+        borderRadius : 5
+    },
+    button: {
+        width: width/2,
+        marginBottom: 10,
+        padding: 10,
+        alignItems: 'center',
+        borderWidth : 0.5,
+        borderColor : '#CCC'
     },
 
     thumb: {
-        width: width/3-20,
-        height: height/5
+        width: width/3-10,
+        height: width/3,
+        borderTopLeftRadius : 5,
+        borderTopRightRadius : 5
+
+        // position : "absolute"
     },
 
     text: {
         flex: 1,
         marginTop: 5,
         fontWeight: 'bold'
-    }
+    },
 });

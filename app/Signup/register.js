@@ -15,10 +15,12 @@ import {Loader} from "app/common/components";
 import commonStyles from "app/common/styles";
 import {Actions as routes} from "react-native-router-flux";
 
-import Icon from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import PasswordInputText from 'react-native-hide-show-password-input';
 import { SegmentedControls } from 'react-native-radio-buttons';
-import Utils from 'app/common/Utils'
+import Utils from 'app/common/Utils';
+import { MessageBar, MessageBarManager } from 'react-native-message-bar';
+
 const { width, height } = Dimensions.get('window')
 
 const INITIAL_STATE = { 
@@ -51,18 +53,25 @@ class Register extends Component {
 			address: '',
 			gender : '',
 			hidden : true,
+			userType : null,
+			type : null,
 			os : (Platform.OS === 'ios') ? 2 : 1,
 		};
 	}
 	componentDidMount(){
         this.fetchData();
+            MessageBarManager.registerMessageBar(this.refs.alert);
+
     }
     eye() {
     	this.setState({
     		hidden : !this.state.hidden
     	})
-
     }
+    componentWillUnmount() {
+    	MessageBarManager.unregisterMessageBar();
+    }
+
     fetchData(){
         fetch(Utils.gurl('countryList'),{
              method: "GET", headers: {
@@ -95,7 +104,7 @@ class Register extends Component {
     } 
 
 	render() {
-		        let icon = this.state.hidden ? 'md-eye-off' :'md-eye';
+		        let icon = this.state.hidden ? 'checkbox-blank-outline' : 'checkbox-marked' ;
 		        // let icon = this.state.hidden ? 'ios-eye' : 'ios-eye-off';
 
 		const {errorStatus, loading} = this.props;
@@ -104,8 +113,9 @@ class Register extends Component {
 				<View style ={[commonStyles.registerContent, {marginBottom : 10}]}>
 					<View style ={commonStyles.iconusername}>
 		
-						<TextInput
-							style={commonStyles.inputusername}
+						<TextInput 
+						    onBlur={ () => this.onBlur() }
+							style={[commonStyles.inputusername, { borderTopLeftRadius : 10, borderTopRightRadius:10}]}
 							value={this.state.fullname}
 							underlineColorAndroid = 'transparent'
 							autoCorrect={false}
@@ -142,9 +152,12 @@ class Register extends Component {
 							onSubmitEditing={() => this.onSubmit()}
                     		onChangeText={ (password) => this.setState({ password }) }
 						/>
-						<Icon name={icon} size={25} color="#000" onPress={()=> this.eye() }/>
 
 					</View>
+					<TouchableOpacity style ={[commonStyles.show, { flexDirection: 'row', alignItems: 'center'}]} onPress={()=> this.eye()}>
+							<Icon name= {icon} size={25} style={{ right : 20}}/>
+							<Text>Show Password </Text>
+					</TouchableOpacity>
 
  				<View style={{borderBottomWidth: 0.5, borderColor: 'red'}}>
  				        			<Text/>
@@ -183,7 +196,7 @@ class Register extends Component {
 							value={this.state.contact}
 							underlineColorAndroid = 'transparent'
 							autoCorrect={false}
-							placeholder="Contact"
+							placeholder="Mobile Number For (Order Update)"
 							maxLength={140}
 							onSubmitEditing={() => this.onSubmit()}
 							onChangeText={(contact) => this.setState({contact})}
@@ -195,7 +208,7 @@ class Register extends Component {
         					alignSelf: 'stretch',
         					// margin: 20,
         					}}>						
-						<Picker style={{width: width/1.5, height: 40, backgroundColor: '#fff'}}
+						<Picker style={{width: width, height: 40, backgroundColor: '#fff'}}
                             mode="dropdown"
                             selectedValue={this.state.selectCountry}
                             onValueChange={(itemValue, itemIndex) => 
@@ -218,21 +231,67 @@ class Register extends Component {
 							onChangeText={(address) => this.setState({address})}
 						/>
 					</View>
+					<View style={{
+        					backgroundColor: 'white',
+        					alignSelf: 'stretch',
+        					borderBottomLeftRadius : 10, 
+        					borderBottomRightRadius:10
+        					// margin: 20,
+        					}}>						
+						<Picker style={{width: width/1.5, height: 40, backgroundColor: '#fff'}}
+                        mode="dropdown"
+                        selectedValue={this.state.type}
+						onValueChange={(itemValue, itemIndex) => this.setState({type: itemValue})}>
+							<Picker.Item label="Select Type"/>
+							<Picker.Item label="USER" value="2" />
+							<Picker.Item label="VENDOR" value="3" />
+						</Picker>
+
+					</View>
 
 				</View>
 				<Button
-					onPress = {this.onSubmit.bind(this)}
+					onPress = {this.validate.bind(this)}
   					title="Create Acount"
   					color="orange"
   					/>
+
 			</ScrollView>
 		);
 	}
 
-	onSubmit() {
-		const {fullname, email, password, gender, contact, country, os, address } = this.state;
-		this.setState({...INITIAL_STATE, loading: true});
+	alert = (msg) => { MessageBarManager.showAlert({ 
+		message: "please enter "+ msg, 
+		alertType: 'warning', 
+		// stylesheetWarning : { backgroundColor : '#ff9c00', strokeColor : '#fff' },
+		animationType: 'SlideFromLeft',})}
 
+    onBlur() {
+    		const {fullname, email, password, gender, contact, country, os, address, type } = this.state;
+
+    	    // console.warn('this.state.fullname',fullname)
+
+        if(fullname.indexOf(' ') >= 0) {
+
+        	this.alert("Fullname")
+        }
+}
+
+
+validate(){
+	const {fullname, email, password, gender, contact, country, os, address, type } = this.state;
+
+	fullname.length ? null : this.alert("Fullname")
+	email.length ? null : this.alert("Email")
+	password.length ? null : this.alert("Password")
+	contact.length ? null : this.alert("Contact")
+	address.length ? null : this.alert("Address")
+}
+
+	onSubmit() {
+		const {fullname, email, password, gender, contact, country, os, address, type } = this.state;
+		// this.setState({...INITIAL_STATE, loading: true});
+		
 		let formData = new FormData();
 		formData.append('fullname', String(fullname));
 		formData.append('email', String(email));

@@ -21,6 +21,8 @@ import GetMarketing from './GetMarketingad';
 import ModalPicker from './modalpicker';
 import AllItem from './AllItem';
 import CheckBox from 'app/common/CheckBox';
+import { MessageBar, MessageBarManager } from 'react-native-message-bar';
+
 
 import Modal from 'react-native-modal';
 
@@ -32,12 +34,7 @@ export default class MainView extends Component {
         super(props); 
         this.fetchAllShop = this.fetchAllShop.bind(this); 
         this.fetchData = this.fetchData.bind(this);
-
         this.getKey= this.getKey.bind(this);
-        
-        // Utils.country()
-        // .then((data) => console.warn(data))
-
         this.state={ 
             dataSource: new ListView.DataSource({   rowHasChanged: (row1, row2) => row1 !== row2 }), 
             dataSource2: new ListView.DataSource({  rowHasChanged: (row1, row2) => row1 !== row2 }), 
@@ -52,6 +49,7 @@ export default class MainView extends Component {
             isModalVisible: false,
             isLoading: true,
             u_id: null,
+            user_type : null,
             country : null
         }
     }
@@ -71,16 +69,23 @@ export default class MainView extends Component {
             var response = JSON.parse(value);  
             this.setState({ 
                 u_id: response.userdetail.u_id ,
-                country: response.userdetail.country 
+                country: response.userdetail.country ,
+                user_type: response.userdetail.user_type 
             }); 
         } catch (error) {
             console.log("Error retrieving data" + error);
         }
     }
+
     modal = () => this.setState({ 
         isModalVisible: !this.state.isModalVisible 
     })
 
+    filterbyShop = () => {
+        this.setState({ 
+            isModalVisible: !this.state.isModalVisible
+        },Actions.filterdBy({ vendor : this.state.rows }) )
+    }
 
     blur() {
         const {dataSource } = this.state;
@@ -91,10 +96,12 @@ export default class MainView extends Component {
         const {dataSource } = this.state;
         dataSource && dataSource.focus();
     }
+
     loadData (){
+        const {u_id, country, user_type } = this.state;
         let formData = new FormData();
-        formData.append('u_id', String(1));
-        formData.append('country', String(1));   
+        formData.append('u_id', String(user_type));
+        formData.append('country', String(country));   
         const config = { 
             method: 'POST', 
             headers: { 
@@ -125,12 +132,7 @@ export default class MainView extends Component {
 
         // this.toast.show(msg+data.name);
     }
-    cancelFilter(){
-        this.setState({
-            rows:''
-        })
-    }
-
+    
     renderView() {
         if (!this.state.dataArray || this.state.dataArray.length === 0)return;
         var len = this.state.dataArray.length;
@@ -175,10 +177,11 @@ export default class MainView extends Component {
     }
 
     addtoWishlist(product_id){
-        console.warn(product_id);
+        const {u_id, country, user_type } = this.state;
+
         let formData = new FormData();
-        formData.append('u_id', String(4));
-        formData.append('country', String(1)); 
+        formData.append('u_id', String(u_id));
+        formData.append('country', String(country)); 
         formData.append('product_id', String(product_id)); 
         const config = { 
                 method: 'POST', 
@@ -191,16 +194,26 @@ export default class MainView extends Component {
         fetch(Utils.gurl('addToWishlist'), config) 
         .then((response) => response.json())
         .then((responseData) => {
-            alert(responseData.data.message);
+            // alert(responseData.data.message);
+
+            MessageBarManager.showAlert({ 
+        message: responseData.data.message, 
+        alertType: 'alert', 
+        // stylesheetWarning : { backgroundColor : '#ff9c00', strokeColor : '#fff' },
+        // animationType: 'SlideFromLeft',
+    })
+
         //     this.setState({
         //     data: responseData.data
         // });
         }).done();
     }
     fetchAllShop(){
+        const {u_id, country, user_type } = this.state;
+
         let formData = new FormData();
-        formData.append('u_id', String(2));
-        formData.append('country', String(1)); 
+        formData.append('u_id', String(user_type));
+        formData.append('country', String(country)); 
 
     const config = { 
                 method: 'POST', 
@@ -221,11 +234,10 @@ export default class MainView extends Component {
         }).done();
     }
 
-
     fetchData(){
-    const {u_id, country } = this.state; 
+        const {u_id, country, user_type } = this.state;
         let formData = new FormData();
-        formData.append('u_id', String(u_id));
+        formData.append('u_id', String(user_type));
         formData.append('country', String(country));  
 
         const config = { 
@@ -237,14 +249,13 @@ export default class MainView extends Component {
             body: formData,
         } 
 
-        fetch(Utils.gurl('productListView'), config) 
+        fetch(Utils.gurl('productList'), config) 
         .then((response) => response.json())
         .then((responseData) => {
-                    // console.warn(JSON.stringify(responseData))
             this.setState({
                 dataSource: this.state.dataSource.cloneWithRows(responseData.data),
                 refreshing : false
-        });
+            });
         }).done();
     }
 
@@ -269,7 +280,8 @@ export default class MainView extends Component {
                 <StatusBar backgroundColor="blue" barStyle="light-content"/>
                 <View style={{ flexDirection : 'row'}}>
                     <View style={ styles.button,[{ 
-                        width : width/2, 
+                        width : width/2,
+                        height : 40, 
                         justifyContent : "space-around", 
                         backgroundColor : '#fff',
                         padding : 2}]}> 
@@ -285,6 +297,7 @@ export default class MainView extends Component {
                     </View>
                     <View style={ styles.button,[{ 
                         width : width/2, 
+                        height : 40, 
                         justifyContent : "space-around", 
                         backgroundColor : '#fff', 
                         padding : 2}]}> 
@@ -305,23 +318,24 @@ export default class MainView extends Component {
                 <AllItem/>
                 <Modal isVisible={this.state.isModalVisible}>
                 <View style={styles.container}>
-                <ScrollView>
-                    {this.renderView()}
-                </ScrollView>
-                 <View style={{ flexDirection : 'row', justifyContent : 'space-around'}}>
-                <TouchableOpacity 
-                underlayColor ={"#fff"} 
-                style={[styles.footer]} 
-                onPress={()=>this.modal()}>
-                <Text>Done</Text>
-                </TouchableOpacity>
-                <TouchableOpacity 
-                underlayColor ={"#fff"} 
-                style={[styles.footer]} 
-                onPress={()=> this.modal()}>
-                <Text>Cancel</Text>
-                </TouchableOpacity>
-            </View>
+                    <ScrollView>
+                        {this.renderView()}
+                    </ScrollView>
+                    <View style={{ flexDirection : 'row', justifyContent : 'space-around'}}>
+                        <TouchableOpacity 
+                        underlayColor ={"#fff"} 
+                        style={[styles.footer]} 
+                        onPress={()=>this.filterbyShop()}>
+                            <Text>Done</Text>
+                        </TouchableOpacity>
+                        
+                        <TouchableOpacity 
+                        underlayColor ={"#fff"} 
+                        style={[styles.footer]} 
+                        onPress={()=> this.modal()}>
+                            <Text>Cancel</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </Modal>
 
@@ -355,10 +369,11 @@ export default class MainView extends Component {
     Service = () => this.setState({ isService: !this.state.isService })
     
     loadServiceData (){
+        const {u_id, country, user_type } = this.state;
         let formData = new FormData();
-        formData.append('u_id', String(1));
-        formData.append('country', String(1));   
-        formData.append('u_id', String(2));   
+        formData.append('u_id', String(user_type));
+        formData.append('country', String(country));   
+        formData.append('u_id', String(user_type));   
         const config = { 
             method: 'POST', 
             headers: { 
@@ -437,6 +452,7 @@ export default class MainView extends Component {
 // Service filter complete here
 
     renderData(data, rowData: string, sectionID: number, rowID: number, index) {
+       
         let color = data.special_price ? '#C5C8C9' : '#000';
         let textDecorationLine = data.special_price ? 'line-through' : 'none';
         
@@ -454,30 +470,42 @@ export default class MainView extends Component {
                     <IconBadge
                         MainElement={ 
                             <Image style={styles.thumb} 
-                                source={{ uri : data.productImage}}/>                        }
+                                source={{ uri : data.productImages[0] ? data.productImages[0].image : null }}/>                        }
                         BadgeElement={
                             <Text style={{color:'#FFFFFF', fontSize: 10, position: 'absolute'}}>{data.discount} %off</Text>
                         }
                         IconBadgeStyle={{
                             width:50,
                             height:16,
-                            top : height/5-10,
+                            top : width/3-10,
                             left: 0,
                             position : 'absolute',
-                            backgroundColor: '#87cefa'}}/>
-                            <EvilIcons style={ { position : 'absolute', left : 0}} 
-                                name="share-google" 
-                                size={20} 
-                                color="#ccc" 
-                                onPress={()=> this.sharing(data.product_id)}/>
-                            <Ionicons style={ {left : width/3-35, position : 'absolute'}} 
-                                name={heartType} 
-                                size={20} 
-                                color="#87cefa" 
-                                onPress={()=> this.addtoWishlist(data.product_id)}/>
-                             
+                            backgroundColor: '#87cefa'}}
+                    />
+                    <EvilIcons style={{ position : 'absolute', left : 0}} 
+                        name="share-google" 
+                        size={20} 
+                        color="#ccc" 
+                        onPress={()=> this.sharing(data.product_id)}/>
+
+                    <TouchableOpacity 
+                    onPress={()=> this.addtoWishlist(data.product_id)}
+                    style={{ 
+                        left : width/3-35, 
+                        position : 'absolute',
+                        width : 50,
+                        height :50
+                    }}
+                    >
+                        <Ionicons  
+                        name={heartType} 
+                        size={20} 
+                        color="#87cefa" 
+                        />
+                    </TouchableOpacity>
                 </View>
-                <View style={{}}>
+                
+                <View style={{ padding :5}}>
                 <TouchableOpacity  style={styles.name} onPress={()=>Actions.deascriptionPage({product_id : data.product_id})}>
 
                 <Text style={{fontSize : 13, color :'#000'}}>{data.product_name}</Text>
@@ -525,7 +553,10 @@ var styles =StyleSheet.create({
     footer : {
         width : width/2-20,
         alignItems : 'center',
-        padding : 10
+        padding : 10,
+        borderTopWidth : 0.5, 
+        borderColor :'#ccc',
+        borderLeftWidth : 0.5
     },
     allshop :{ 
         flex:1, 
@@ -540,7 +571,7 @@ var styles =StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'space-between',
         width : width/3 -7,
-        padding: 5,
+        // padding: 5,
         margin: 3,
         borderWidth: 1,
         borderColor: '#CCC',
@@ -557,7 +588,10 @@ var styles =StyleSheet.create({
 
     thumb: {
         width: width/3-10,
-        height: height/5,
+        height: width/3,
+        borderTopLeftRadius : 5,
+        borderTopRightRadius : 5
+
         // position : "absolute"
     },
 

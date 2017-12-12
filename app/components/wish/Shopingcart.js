@@ -9,6 +9,7 @@ import {
     ScrollView, 
     Dimensions, 
     TextInput,
+    AsyncStorage,
     Image 
 } from 'react-native';
 import Swipeout from 'react-native-swipeout';
@@ -21,23 +22,49 @@ const { width, height } = Dimensions.get('window');
 export default class Shopingcart extends Component {
     constructor(props) { 
         super(props); 
-        const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}); 
+        this.getKey = this.getKey.bind(this);        
+        this.fetchData = this.fetchData.bind(this);
+
+        // const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}); 
         this.state = { 
-            dataSource: ds.cloneWithRows(['row 1', 'row 2']),
+            dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}),
             itemcount : '',
             totalamount : '',
             subtotalamount : '', 
             Quentity : 0,
+            u_id: null,
+            user_type : null,
+            country : null
+
         }; 
     } 
     componentDidMount(){
-        this.fetchData();
+        this.getKey()
+        .then(()=>this.fetchData())
+        .done()
     }
 
-    fetchData(){ 
+    async getKey() {
+        try { 
+            const value = await AsyncStorage.getItem('data'); 
+            var response = JSON.parse(value);  
+            this.setState({ 
+                u_id: response.userdetail.u_id ,
+                country: response.userdetail.country ,
+                user_type: response.userdetail.user_type 
+            }); 
+        } catch (error) {
+            console.log("Error retrieving data" + error);
+        }
+    }
+
+
+    fetchData(){
+        const {u_id, country, user_type } = this.state;
+
         let formData = new FormData();
-        formData.append('u_id', String(4));
-        formData.append('country', String(1));  
+        formData.append('u_id', String(u_id));
+        formData.append('country', String(country));  
 
         const config = { 
             method: 'POST', 
@@ -50,7 +77,6 @@ export default class Shopingcart extends Component {
         fetch(Utils.gurl('cartList'), config) 
         .then((response) => response.json())
         .then((responseData) => { 
-            // console.warn(JSON.stringify(responseData.itemcount));
             this.setState({
                 dataSource: this.state.dataSource.cloneWithRows(responseData.data),
                 itemcount : responseData.itemcount,    
@@ -72,21 +98,8 @@ export default class Shopingcart extends Component {
         // });
     } 
 
-    render() {
-        const { itemcount, totalamount, subtotalamount } = this.state;
-        let listView = (<View></View>);
-            listView = (
-                <ListView
-                contentContainerStyle={styles.container}
-                dataSource={this.state.dataSource}
-                renderRow={this.renderData.bind(this)}
-                enableEmptySections={true}
-                automaticallyAdjustContentInsets={false}
-                showsVerticalScrollIndicator={false}
-                />
-            );
-        return (
-        <View style={{flex: 1, flexDirection: 'column'}}>
+    renderHeader(itemcount, totalamount){
+        return(
             <View 
                 style={{ 
                     flexDirection : "row", 
@@ -95,16 +108,16 @@ export default class Shopingcart extends Component {
                     paddingBottom : 0,
                     alignItems:'center', 
                     flex : 0}}> 
-                <Text>Items ({itemcount})</Text>
+                <Text> Items ({itemcount})</Text>
                 <Text>Total : ${totalamount}</Text>
-            </View>
-            {listView}
-            <View 
+            </View>)
+    }
+
+    renderFooter(itemcount, totalamount, subtotalamount){
+        return(
+        <View 
                 style={{ 
                     flexDirection : "column", 
-                    // justifyContent: "space-around", 
-                    // alignItems:'center', 
-                    // flex : 0
                 }}> 
                 <View 
                     style={{ 
@@ -128,7 +141,31 @@ export default class Shopingcart extends Component {
                 </View>
             </View>
 
-            <View style={{ flexDirection : 'row', justifyContent : 'space-around'}}>
+            
+        )
+    }
+
+    render() {
+        const { itemcount, totalamount, subtotalamount } = this.state;
+        
+        let listView = (<View></View>);
+            listView = (
+                <ListView
+                contentContainerStyle={styles.container}
+                dataSource={this.state.dataSource}
+                renderRow={this.renderData.bind(this)}
+                enableEmptySections={true}
+                automaticallyAdjustContentInsets={false}
+                showsVerticalScrollIndicator={false}
+                />
+            );
+        return (
+        <View style={{flex: 1, flexDirection: 'column'}}>
+        {this.renderHeader( itemcount,totalamount)}
+            {listView}
+        {this.renderFooter(itemcount, totalamount, subtotalamount)}
+
+        <View style={{ flexDirection : 'row', justifyContent : 'space-around'}}>
                 <TouchableHighlight 
                 underlayColor ={"#fff"} 
                 style={[styles.shoping]} 
@@ -146,9 +183,16 @@ export default class Shopingcart extends Component {
         );
     }
     renderData( data, rowData: string, sectionID: number, rowID: number, index) {
-    // console.warn(data); 
+    
         let color = data.special_price ? '#C5C8C9' : '#000';
         let textDecorationLine = data.special_price ? 'line-through' : 'none';
+
+        if ( !data.special_price) {
+            return (
+                <Text> No Item added to your cart </Text>
+                );
+        }
+
 
         let swipeBtns = [{
             text: 'Edit',
@@ -161,6 +205,7 @@ export default class Shopingcart extends Component {
             underlayColor: 'rgba(0, 0, 0, 1, 0.6)',
             onPress: () => {  }
          }];
+    
         return (
             <View style={{ 
                 flexDirection: 'column' ,
@@ -171,10 +216,13 @@ export default class Shopingcart extends Component {
             }}>
                         <View style={{ 
                             flexDirection: 'row', 
-                            // justifyContent : 'space-around', 
                             backgroundColor : "#fff"}}>
                             
-                                <View style={{flexDirection: 'column', justifyContent : 'space-between'}}>  
+                                <View style={{flexDirection: 'column', justifyContent : 'space-between'}}>
+                                                            <Image style={[styles.thumb, {margin: 10}]} 
+                            source={{ uri : data.productImages[0] ? data.productImages[0].image : null}}
+                            />
+  
                                     <TouchableHighlight
                                         underlayColor='transparent'
                                         onPress={this.viewNote.bind(this, data)} 
@@ -185,7 +233,7 @@ export default class Shopingcart extends Component {
                                     </TouchableHighlight>
                                         <View style={{ flexDirection : "row"}}>
                                         
-                                            <Text> Quentity : {sectionID} </Text>
+                                            <Text> Quentity : </Text>
                                             <TouchableOpacity 
                                                 style={styles.qtybutton} 
                                                 onPress={(Quentity)=> this.setState({Quentity : this.state.Quentity -1})}>

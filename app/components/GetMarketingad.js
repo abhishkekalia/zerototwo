@@ -9,9 +9,6 @@ import {
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import IconBadge from 'react-native-icon-badge';
-
-// import Image from 'react-native-image-progress';
-// import ProgressBar from 'react-native-progress/Circle';
 import Utils from 'app/common/Utils';
 
 export default class GetMarketing extends Component {
@@ -19,17 +16,34 @@ export default class GetMarketing extends Component {
         super(props);        
         this.state={ 
             dataSource: new ListView.DataSource({   rowHasChanged: (row1, row2) => row1 !== row2 }), 
+            u_id: null,
+            country : null
         }
     }
 
     componentDidMount(){
-        this.fetchData()
+        this.getKey()
+        .then( ()=>this.fetchData())
+    }
+
+    async getKey() {
+        try { 
+            const value = await AsyncStorage.getItem('data'); 
+            var response = JSON.parse(value);  
+            this.setState({ 
+                u_id: response.userdetail.u_id ,
+                country: response.userdetail.country 
+            }); 
+        } catch (error) {
+            console.log("Error retrieving data" + error);
+        }
     }
 
     fetchData(){ 
+        const { u_id,  country } = this.state;
         let formData = new FormData();
-        formData.append('u_id', String(7));
-        formData.append('country', String(1)); 
+        formData.append('u_id', String(u_id));
+        formData.append('country', String(country)); 
 
     const config = { 
                 method: 'POST', 
@@ -39,12 +53,10 @@ export default class GetMarketing extends Component {
                 },
                 body: formData,
             }
-    // fetch(`http://solutiontrackers.com/dev-a/zerototwo/index.php/Webservice/getMarketingAd`, config) 
 
     fetch(Utils.gurl('getMarketingAd'), config) 
         .then((response) => response.json())
         .then((responseData) => {
-                    // console.warn(JSON.stringify(responseData))
             this.setState({
                 dataSource: this.state.dataSource.cloneWithRows(responseData.data),
                 refreshing : false
@@ -74,6 +86,11 @@ export default class GetMarketing extends Component {
         );
     }
     renderData(data, rowData: string, sectionID: number, rowID: number, index) {
+        if ( !data.path) {
+            return (
+                <Text style={{ fontSize: 10}}>No Advertise For You</Text>
+                );
+        }
         return (
             <TouchableOpacity style={styles.row} onPress={()=> Actions.timeLine({ 
                     uri : data.path })}> 
