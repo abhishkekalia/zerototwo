@@ -10,9 +10,10 @@ import {
   AsyncStorage,
   Picker
 } from 'react-native';
+import {Actions as routes} from "react-native-router-flux";
 import { MessageBar, MessageBarManager } from 'react-native-message-bar';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import Swiper from 'react-native-swiper';
 import { BubblesLoader } from 'react-native-indicator';
 import Ionicons from 'react-native-vector-icons/MaterialIcons';
 import {Button} from "app/common/components";
@@ -103,13 +104,22 @@ export default class ProductDescription extends Component {
         fetch(Utils.gurl('addTocart'), config) 
         .then((response) => response.json())
         .then((responseData) => {
-
+if(responseData.status){
             MessageBarManager.showAlert({ 
                 message: responseData.data.message, 
                 alertType: 'alert', 
                 stylesheetWarning : { backgroundColor : '#87cefa', strokeColor : '#fff' },
                 // animationType: 'SlideFromLeft',
             })
+            routes.shopingCart()
+        }else{
+            MessageBarManager.showAlert({ 
+                message: responseData.data.message, 
+                alertType: 'alert', 
+                stylesheetWarning : { backgroundColor : '#87cefa', strokeColor : '#fff' },
+                // animationType: 'SlideFromLeft',
+            })
+        }
 
             // this.setState({ 
                 // imgList: responseData.data.productImages,
@@ -192,9 +202,10 @@ export default class ProductDescription extends Component {
                             </TouchableOpacity>
                         </View>
                         <View>
+                        <View style={{ justifyContent:'space-between', height: 40, backgroundColor:'#ccc', flexDirection:"row" ,alignItems: 'center' }}>
                             <Picker
+                            style={{width: width/1.5,backgroundColor: '#ccc'}}
                             mode="dropdown"
-                            style={{width: width, height: 40, backgroundColor: '#fff'}}
                             selectedValue={this.state.size}
                             onValueChange={(itemValue, itemIndex) => this.setState({size: itemValue})}>
                                 <Picker.Item label="Select Size" value="" />
@@ -202,9 +213,16 @@ export default class ProductDescription extends Component {
                                 <Picker.Item label="Medium" value="medium" />
                                 <Picker.Item label="Large" value="large" />
                             </Picker>
+                            <Icon
+                            name="chevron-down" 
+                            size={21} 
+                            color="#ff8c00" 
+                            style={styles.countryIcon}/>
+                            </View>
+                            <View style={{ justifyContent:'space-between', height: 40, backgroundColor:'#ccc', flexDirection:"row" ,alignItems: 'center' }}>
                             <Picker 
                             mode="dropdown"
-                            style={{width: width, height: 40, backgroundColor: '#fff'}}
+                            style={{width: width/1.5,backgroundColor: '#ccc'}}
                             selectedValue={this.state.color}
                             onValueChange={(itemValue, itemIndex) => this.setState({color: itemValue})}>
                                 <Picker.Item label="Select color" value="" />
@@ -212,30 +230,19 @@ export default class ProductDescription extends Component {
                                 <Picker.Item label="Yellow" value="yellow" />
                                 <Picker.Item label="Pick" value="pink" />
                             </Picker>
-                        </View>
-                        <View style={{flexDirection: 'row'}}>
-    
-                            <Button onPress={() => this.setState({ Size: '7'})} testID="LoginButton">
-                            7-8 Y
-                            </Button>
-                            <Button onPress={() => this.setState({ Size: '8'})} testID="LoginButton">
-                            8-9 Y
-                            </Button>
-                            <Button onPress={() => this.setState({ Size: '9'})} testID="LoginButton">
-                            9-10 Y
-                            </Button>
-                            <Button onPress={() => this.setState({ Size: '10'})} testID="LoginButton">
-                            10-11 Y
-                            </Button>
-                            <Button onPress={() => this.setState({ Size: '11'})} testID="LoginButton">
-                            11-12 Y
-                            </Button>
+                            <Icon
+                            name="chevron-down" 
+                            size={21} 
+                            color="#ff8c00" 
+                            style={styles.countryIcon}/>
+                            </View>
                         </View>
 
                         <View style={{
                             flexDirection: 'row', 
                             justifyContent: 'center', 
-                            alignItems: 'center'
+                            alignItems: 'center',
+                            padding :10
                         }}>
                         <TouchableOpacity  style={styles.qtybutton} onPress={()=> this.setState({count: count-1})}> 
                             <Text style={styles.text}>-</Text>

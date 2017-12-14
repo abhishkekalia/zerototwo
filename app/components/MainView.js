@@ -237,7 +237,7 @@ export default class MainView extends Component {
     fetchData(){
         const {u_id, country, user_type } = this.state;
         let formData = new FormData();
-        formData.append('u_id', String(user_type));
+        formData.append('u_id', String(u_id));
         formData.append('country', String(country));  
 
         const config = { 
@@ -249,7 +249,7 @@ export default class MainView extends Component {
             body: formData,
         } 
 
-        fetch(Utils.gurl('productList'), config) 
+        fetch(Utils.gurl('allProductItemList'), config) 
         .then((response) => response.json())
         .then((responseData) => {
             this.setState({
@@ -458,7 +458,7 @@ export default class MainView extends Component {
         
         let heartType
 
-        if (data.is_feature == 0) {
+        if (data.is_wishlist === '0') {
             heartType = 'ios-heart-outline'; 
         } else {
             heartType = 'ios-heart' ;

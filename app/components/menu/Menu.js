@@ -18,22 +18,10 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import IconBadge from 'react-native-icon-badge';
 import Utils from 'app/common/Utils';
 
-const window = Dimensions.get('window');
+const { width, height } = Dimensions.get('window')
 
 class Menu extends React.Component { 
-    // static propTypes = { 
-    //     name: PropTypes.string, 
-    //     sceneStyle: ViewPropTypes.style, 
-    //     title: PropTypes.string,
-    //     identity: PropTypes.object.isRequired,
-    //     logout: PropTypes.func.isRequired
-    // } 
-
-    // static contextTypes = { 
-    //     drawer: React.PropTypes.object
-    // }
-    
-    render() { 
+       render() { 
         const {identity, logout} = this.props;
         return ( 
             <ScrollView scrollsToTop={false} contentContainerStyle={styles.contentContainer}> 
@@ -43,7 +31,7 @@ class Menu extends React.Component {
                     <Zocial name='guest' color="#fff" size={15} />
                     </Text>
                     </View>
-                    <Text style={{ position: 'absolute' , paddingLeft : 60, paddingTop : 75, color:"#fff"}}>{identity.username}</Text>
+                    <Text style={{ position: 'absolute' , paddingLeft : width/3, paddingTop : 75, color:"#fff"}}>{identity.username}</Text>
                 </View>
                 
                 <View style={[styles.badge, styles.seprator]}> 
@@ -51,16 +39,17 @@ class Menu extends React.Component {
                         MainElement={ 
                             <Ionicons 
                             name="ios-notifications" 
-                            color="#87cefa" size={25}
+                            color="#87cefa" size={30}
+                            style={{ left : 13}}
                             />
                         }
                         BadgeElement={
                           <Text style={{color:'#FFFFFF'}}>1</Text>
                         }
                         IconBadgeStyle={{
-                            width:15,
-                            height:16,
-                            left : 10,
+                            width:16,
+                            height:18,
+                            // left : 10,
                             backgroundColor: 'orange'}}
                     />
                     <Text 
@@ -123,14 +112,14 @@ const styles = StyleSheet.create({
 
     menu: {
         flex: 1,
-        width: window.width - 30,
-        height: window.height,
+        width: width - 30,
+        height:height,
         backgroundColor: "grey",
         position : 'absolute'
     },
     
     avatarContainer: {
-        width: window.width,
+        width: width,
         height : 100,
         backgroundColor : '#f08080',
     },
@@ -144,7 +133,7 @@ const styles = StyleSheet.create({
 
     username: {
         flex : 1,
-        left : window.width/2.5,
+        left : width/2.5,
         top :20,
         position: 'absolute',
         backgroundColor : '#fff',

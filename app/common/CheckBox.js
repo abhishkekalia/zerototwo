@@ -49,9 +49,10 @@ export default class CheckBox extends Component {
         _renderLeft() {
             if (this.props.leftTextView)return this.props.leftTextView;
         if (!this.props.leftText)return null;
+      let counting = this.props.countingItem ? <Text style={{ fontSize: 10}}> {"("} {this.props.countingItem} {")"} </Text> : null
         return (
             <View style={{flexDirection: 'row', paddingLeft : 10, backgroundColor : 'transparent'}}>
-                <Text style={[styles.leftText, this.props.leftTextStyle]}>{this.props.leftText}</Text>
+                <Text style={[styles.leftText, this.props.leftTextStyle]}>{this.props.leftText} {counting}</Text>
             </View>
         );
     }

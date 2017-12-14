@@ -83,10 +83,14 @@ export default class Searchproduct extends Component {
         .then((responseData) => {
         // console.warn(JSON.stringify(responseData))
 
+        if(responseData.status){
             this.setState({
                 dataSource: this.state.dataSource.cloneWithRows(responseData.data),
                 refreshing : false
-        });
+            });
+        } else {
+            console.warn(responseData.data.message)
+        }
         }).done();
     }
 
@@ -113,6 +117,7 @@ export default class Searchproduct extends Component {
     renderData(data, rowData: string, sectionID: number, rowID: number, index) {
             let color = data.special_price ? '#C5C8C9' : '#000';
         let textDecorationLine = data.special_price ? 'line-through' : 'none';
+        let url = data.productImages ? data.productImages[0].image : null;
         
         let heartType
 
@@ -127,7 +132,7 @@ export default class Searchproduct extends Component {
                     <IconBadge
                         MainElement={ 
                             <Image style={styles.thumb} 
-                                source={{ uri : data.productImages[0] ? data.productImages[0].image : null }}/>                        }
+                                source={{ uri : url }}/>                        }
                         BadgeElement={
                             <Text style={{color:'#FFFFFF', fontSize: 10, position: 'absolute'}}>{data.discount} %off</Text>
                         }

@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 import {Actions} from "react-native-router-flux";
 
-import { Dropdown } from 'react-native-material-dropdown';
 import Utils from 'app/common/Utils';
 import Ionicons from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -95,6 +94,11 @@ export default class WelcomeScreen extends Component {
                                 <Picker.Item label="Select country" value="" /> 
                                {this.loadUserTypes()}
                             </Picker>
+                            <Ionicons 
+                    name="chevron-down" 
+                    size={21} 
+                    color="#ff8c00" 
+                    style={styles.countryIcon}/>
                 </View>
                 <View style={styles.row}>
                     <Ionicons 
@@ -112,6 +116,11 @@ export default class WelcomeScreen extends Component {
                             <Picker.Item label="Ahmedabad" value="1" /> 
                             <Picker.Item label="Gandhinagar" value="2" /> 
                     </Picker>
+                    <Ionicons 
+                    name="chevron-down" 
+                    size={21} 
+                    color="#ff8c00" 
+                    style={styles.countryIcon}/>
                 </View>
             </View>
         );

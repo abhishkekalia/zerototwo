@@ -12,10 +12,10 @@ import {
     AsyncStorage,
     Image 
 } from 'react-native';
-import Swipeout from 'react-native-swipeout';
 import Utils from 'app/common/Utils';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { MessageBarManager } from 'react-native-message-bar';
 
 const { width, height } = Dimensions.get('window');
 
@@ -84,7 +84,47 @@ export default class Shopingcart extends Component {
                 subtotalamount : responseData.subtotalamount, 
                 refreshing : false
         });
-        }).done();
+        })
+        .then(()=> this.fetchData())
+        .done();
+    }
+
+    removeFromCart(cart_id, product_id){
+    const { size, color,  } = this.state; 
+        const {u_id, country, user_type } = this.state;
+
+        let formData = new FormData();
+        formData.append('u_id', String(u_id));
+        formData.append('country', String(country)); 
+        formData.append('product_id', String(product_id)); 
+        formData.append('cart_id', String(cart_id)); 
+
+        const config = { 
+            method: 'POST', 
+            headers: { 
+                'Accept': 'application/json', 
+                'Content-Type': 'multipart/form-data;',
+            },
+            body: formData,
+        }
+        
+        fetch(Utils.gurl('removeFromCart'), config) 
+        .then((response) => response.json())
+        .then((responseData) => {
+
+            MessageBarManager.showAlert({ 
+                message: responseData.data.message, 
+                alertType: 'alert', 
+                stylesheetWarning : { backgroundColor : '#87cefa', strokeColor : '#fff' },
+                // animationType: 'SlideFromLeft',
+            })
+
+            // this.setState({ 
+                // imgList: responseData.data.productImages,
+                // data : responseData.data
+        // });
+        })
+        .done();
     }
 
     viewNote(rowData) {
@@ -219,9 +259,10 @@ export default class Shopingcart extends Component {
                             backgroundColor : "#fff"}}>
                             
                                 <View style={{flexDirection: 'column', justifyContent : 'space-between'}}>
-                                                            <Image style={[styles.thumb, {margin: 10}]} 
-                            source={{ uri : data.productImages[0] ? data.productImages[0].image : null}}
-                            />
+                                    <View style={{ flexDirection: 'row'}}>
+                                    <Image style={[styles.thumb, {margin: 10}]} 
+                                    source={{ uri : data.productImages[0] ? data.productImages[0].image : null}}/>
+                                    <View>
   
                                     <TouchableHighlight
                                         underlayColor='transparent'
@@ -260,11 +301,14 @@ export default class Shopingcart extends Component {
                                         </View>
                                         <Text > Total :{data.price} </Text>
                                     </View>
+                                    </View>
                                 </View>
-                                
+                            </View>
                 
                 <View style={styles.bottom}>
-                        <TouchableOpacity style={[styles.wishbutton, {flexDirection : 'row', justifyContent: "center"}]}>
+                        <TouchableOpacity 
+                        onPress={()=> this.removeFromCart(data.cart_id, data.product_id)}
+                        style={[styles.wishbutton, {flexDirection : 'row', justifyContent: "center"}]}>
                         <Entypo name="cross" size={20} color="#87cefa"/>
                             <Text style={{ left : 5}}>Remove</Text>
                         </TouchableOpacity>

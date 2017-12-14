@@ -8,18 +8,17 @@ export const AUTH_LOGIN_SUCCESS = 'AUTH_LOGIN_SUCCESS';
 export const AUTH_LOGIN_FAIL = 'AUTH_LOGIN_FAIL';
 export const AUTH_LOGOUT = 'AUTH_LOGOUT';
 
-export const login = (username, password, os) => {
-	return dispatch => {
-		dispatch(loginStart());
+// export const login = (username, password, os) => {
+// 	return dispatch => {
 
-		setTimeout(() => {
-			if (username.length && password.length) {
-				return dispatch(loginSuccess(username, password, os));
-			}
-			return dispatch(loginFail(new Error('username and password fields are required')));
-		}, Math.random() * 1000 + 500)
-	};
-};
+// 		setTimeout(() => {
+// 			if (username.length && password.length) {
+// 				return dispatch(loginSuccess(username, password, os));
+// 			}
+// 			return dispatch(loginFail(new Error('username and password fields are required')));
+// 		}, Math.random() * 1000 + 500)
+// 	};
+// };
 
 const loginStart = () => {
 	return {
@@ -27,7 +26,10 @@ const loginStart = () => {
 	}
 };
 
-const loginSuccess = (username, password, os) => {
+export const login = (username, password, os) => {
+		return dispatch => {
+		dispatch(loginStart());
+
 	let formData = new FormData();
 	formData.append('email', String(username));
 	formData.append('password', String(password)); 
@@ -45,20 +47,22 @@ const loginSuccess = (username, password, os) => {
     fetch(Utils.gurl('login'), config) 
     .then((response) => response.json()) 
     .then((responseData) => {
-    	    	AsyncStorage.setItem('data', JSON.stringify({ 
-    	    		"userdetail" : { 
-	    	       		"u_id" : responseData.response.data.u_id , 
-	    	       		"fullname" : responseData.response.data.fullname , 
-	    	       		"email" : responseData.response.data.email ,
-	    	       		"phone_no" : responseData.response.data.phone_no ,
-	    	       		"country" : responseData.response.data.country ,
-	    	       		"address" : responseData.response.data.address ,
-	    	       		"u_name" : responseData.response.data.is_active ,
-	    	       		"user_type" : responseData.response.data.user_type 
-        	    	}
-        	    }));
+
     	 if (responseData.response.status) { 
-    	 	routes.homePage();
+    	 	AsyncStorage.setItem('data', JSON.stringify({ 
+    	   		"userdetail" : { 
+	           		"u_id" : responseData.response.data.u_id , 
+	           		"fullname" : responseData.response.data.fullname , 
+	           		"email" : responseData.response.data.email ,
+	           		"phone_no" : responseData.response.data.phone_no ,
+	           		"country" : responseData.response.data.country ,
+	           		"address" : responseData.response.data.address ,
+	           		"u_name" : responseData.response.data.is_active ,
+	           		"user_type" : responseData.response.data.user_type 
+            	}
+        	}));
+    	 	dispatch(successHome(username, password));
+    	 	// routes.homePage();
          } else {
             MessageBarManager.showAlert({
             message: "invalid username and password",
@@ -71,7 +75,13 @@ const loginSuccess = (username, password, os) => {
     }) 
     .done();
 	
-	return {
+	
+};
+};
+
+const successHome = (username, password, os) => {
+ 	routes.homePage();
+ 	return {
 		type: AUTH_LOGIN_SUCCESS,
 		payload: {
 			token: Math.random().toString(),

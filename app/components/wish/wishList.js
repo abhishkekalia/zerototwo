@@ -18,6 +18,8 @@ import Utils from 'app/common/Utils';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { MessageBar, MessageBarManager } from 'react-native-message-bar';
+import { Actions } from 'react-native-router-flux';
+import Ionicons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const { width, height } = Dimensions.get('window');
 
@@ -80,14 +82,14 @@ export default class WishList extends Component {
         }).done();
     }
 
-    addtoCart(count){
-    const { size, color,  } = this.state; 
+    addtoCart(count, product_id){
+        const { size, color,  } = this.state; 
         const {u_id, country, user_type } = this.state;
 
         let formData = new FormData();
         formData.append('u_id', String(u_id));
         formData.append('country', String(country)); 
-        formData.append('product_id', String(this.props.product_id)); 
+        formData.append('product_id', String(product_id)); 
         formData.append('size', String(size)); 
         formData.append('color', String(color)); 
         formData.append('quantity', String(count)); 
@@ -104,19 +106,24 @@ export default class WishList extends Component {
         fetch(Utils.gurl('addTocart'), config) 
         .then((response) => response.json())
         .then((responseData) => {
+            if(responseData.status){
+                MessageBarManager.showAlert({ 
+                    message: responseData.data.message, 
+                    alertType: 'alert', 
+                    stylesheetWarning : { backgroundColor : '#87cefa', strokeColor : '#fff' },
+                })
+                Actions.shopingCart();
+            }else {
+                MessageBarManager.showAlert({ 
+                    message: responseData.data.message, 
+                    alertType: 'alert', 
+                    stylesheetWarning : { backgroundColor : '#87cefa', strokeColor : '#fff' },
+                })
 
-            MessageBarManager.showAlert({ 
-                message: responseData.data.message, 
-                alertType: 'alert', 
-                stylesheetWarning : { backgroundColor : '#87cefa', strokeColor : '#fff' },
-                // animationType: 'SlideFromLeft',
-            })
+            }
 
-            // this.setState({ 
-                // imgList: responseData.data.productImages,
-                // data : responseData.data
-        // });
         })
+        .then(()=> this.fetchData())
         .done();
     }
 
@@ -201,10 +208,9 @@ export default class WishList extends Component {
                 return (
                 <Text> No data </Text>);
             }
-        
         return (
         <View>
-        {listView}
+            {listView}
         </View>
         );
     }
@@ -289,19 +295,30 @@ export default class WishList extends Component {
                                         </View>
                                         <Text > Total :{data.price} </Text>
                                         <View style={{ flexDirection:'row'}}>
+                                        <View style={{width: width/3, height: 40, backgroundColor: '#fff'}}> 
                                         <Picker
                             mode="dropdown"
-                            style={{width: width/3, height: 40, backgroundColor: '#fff'}}
+                            style={{
+                                // width: width/3, height: 40, 
+                                backgroundColor: '#fff'
+                            }}
                             selectedValue={this.state.size}
                             onValueChange={(itemValue, itemIndex) => this.setState({size: itemValue})}>
                                 <Picker.Item label="Select Size" value="" />
                                 <Picker.Item label="Small" value="small" />
                                 <Picker.Item label="Medium" value="medium" />
                                 <Picker.Item label="Large" value="large" />
+
                             </Picker>
+                            <Ionicons 
+                    name="chevron-down" 
+                    size={21} 
+                    color="#ff8c00" 
+                    style={styles.countryIcon}/>
+                    </View>
+                    <View style={{width: width/3, height: 40, backgroundColor: '#fff'}}> 
                             <Picker 
                             mode="dropdown"
-                            style={{width: width/3, height: 40, backgroundColor: '#fff'}}
                             selectedValue={this.state.color}
                             onValueChange={(itemValue, itemIndex) => this.setState({color: itemValue})}>
                                 <Picker.Item label="Select color" value="" />
@@ -309,6 +326,12 @@ export default class WishList extends Component {
                                 <Picker.Item label="Yellow" value="yellow" />
                                 <Picker.Item label="Pick" value="pink" />
                             </Picker>
+                            <Ionicons 
+                    name="chevron-down" 
+                    size={21} 
+                    color="#ff8c00" 
+                    style={styles.countryIcon}/>
+                    </View>
                             </View>
                                     </View>
 
@@ -323,7 +346,7 @@ export default class WishList extends Component {
                             <Text style={{ left : 5}}>Share WishList</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={[styles.wishbutton, {flexDirection : 'row', justifyContent: "center"}]} 
-                        onPress={()=>this.addtoCart(data.quantity[sectionID])}>
+                        onPress={()=>this.addtoCart(data.quantity[sectionID], data.product_id)}>
                             <FontAwesome name="opencart" size={20} color="#a52a2a"/> 
                             <Text style={{ left :5}}>Move to Cart</Text>
                         </TouchableOpacity>
@@ -342,7 +365,6 @@ const styles = StyleSheet.create ({
         // alignItems: 'center',
         // backgroundColor: '#ccc',
         padding : 10 
-
     },
 
     row: {
@@ -363,6 +385,14 @@ const styles = StyleSheet.create ({
         shadowRadius: 2,
         // shadowOffset:{width:2,height:4}
     },
+        countryIcon: {
+        // borderRightWidth: 1, 
+        // borderColor: '#CCC',
+        width : 40,
+        height:40,
+        padding :10
+    },
+
 
     wishbutton :{
         alignItems : 'center', 

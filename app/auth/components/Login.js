@@ -20,11 +20,6 @@ import { MessageBar, MessageBarManager } from 'react-native-message-bar';
 const INITIAL_STATE = {email: '', password: ''};
 
 class Login extends Component {
-	static propTypes = {
-		// errorStatus: PropTypes.string.isRequired,
-		// login: PropTypes.func.isRequired
-	};
-
 	constructor() {
 		super();
 		this.state = {
@@ -33,6 +28,20 @@ class Login extends Component {
 			os : (Platform.OS === 'ios') ? 2 : 1,
 
 		};
+	}
+	onBlurUser() { 
+		const { email } = this.state;
+		let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ; 
+
+		if(reg.test(email) === false) 
+			{ 
+
+			MessageBarManager.showAlert({
+            message: "Plese Enter Email",
+            alertType: 'alert',
+            })
+				return false;
+			}
 	}
 
 	render() {
@@ -48,6 +57,7 @@ class Login extends Component {
 						/>
 						<TextInput
 							style={commonStyles.inputusername}
+							// onBlur={ () => this.onBlurUser() }
 							value={this.state.email}
 							underlineColorAndroid = 'transparent'
 							autoCorrect={false}
@@ -67,7 +77,7 @@ class Login extends Component {
 						<TextInput
 							style={commonStyles.inputpassword}
 							value={this.state.password}
-							 underlineColorAndroid = 'transparent'
+							underlineColorAndroid = 'transparent'
 							autoCorrect={false}
 							placeholder="Password"
 							secureTextEntry
@@ -107,18 +117,36 @@ class Login extends Component {
 		routes.registerPage();
 	}
 
+	validate(){
+		const {email, password} = this.state;
+
+		let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ; 
+		if(reg.test(email) === false) 
+		{ 
+			MessageBarManager.showAlert({
+            message: "Plese Enter Valid Email",
+            alertType: 'alert',
+            })
+			return false;
+		}
+		if (!password.length)
+		{ 
+			MessageBarManager.showAlert({
+            	message: "Plese Enter Your Password",
+            	alertType: 'alert',
+        	})
+			return false
+		}
+			return true;
+	} 
+
+
 	onSubmit() {
 		const {email, password, os} = this.state;
-			email.length ? null : alert('email empty')
-		password.length ? null : alert('password empty')
-			
-		if (email.length && password.length) {
-		this.setState({...INITIAL_STATE, loading: true});
-		this.props.login(email, password, os);
-			}
-
-		// this.setState({...INITIAL_STATE, loading: true});
-		// this.props.login(email, password, os);
+		if (this.validate()) {
+			this.setState({...INITIAL_STATE, loading: true});
+			this.props.login(email, password, os);
+		}
 	}
 }
 

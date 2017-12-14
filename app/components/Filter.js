@@ -7,10 +7,12 @@ import {
     StyleSheet, 
     View,
     Button ,
-    TextInput
+    TextInput,
+    ScrollView
 } from 'react-native';
 import SelectMultiple from './src/SelectMultiple';
 import { Actions } from 'react-native-router-flux'
+import CheckBox from 'app/common/CheckBox';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
@@ -26,7 +28,8 @@ export default class Filter extends Component {
             selected: [],
             button : false,
             search : '',
-            category : []
+            category : [],
+            rows : []
         }
     } 
     setModalVisible(visible) { 
@@ -62,8 +65,64 @@ export default class Filter extends Component {
         }).done();
     }
 
+    renderView() {
+        if (!this.state.category || this.state.category.length === 0)return;
+        var len = this.state.category.length;
+        var views = [];
+        for (var i = 0, l = len - 2; i < l; i += 2) {
+            views.push(
+                <View key={i}>
+                    <View style={styles.item}>
+                        {this.renderCheckBox(this.state.category[i])}
+                        {this.renderCheckBox(this.state.category[i + 1])}
+                    </View>
+                </View>
+            )
+        }
+        views.push(
+            <View key={len - 1}>
+                <View style={styles.item}>
+                    {len % 2 === 0 ? this.renderCheckBox(this.state.category[len - 2]) : null}
+                    {this.renderCheckBox(this.state.category[len - 1])}
+                </View>
+            </View>
+        )
+        return views;
+
+    }
+    onClick(data) {
+        var newArray = this.state.rows.slice(); 
+        newArray.push(data.category_id); 
+        this.setState({
+            rows: newArray
+        });
+
+        data.checked = !data.checked;
+        let msg=data.checked? 'you checked ':'you unchecked '
+        // this.toast.show(msg+data.name);
+    }
+
+
+    renderCheckBox(data) {
+        var leftText = data.category_name;
+        var sum = data.count;
+        var icon_name = data.icon_name;
+        return (
+            <CheckBox
+                style={{flex: 1, padding: 5, borderTopWidth : 1, borderColor : '#ccc'}}
+                onClick={()=>this.onClick(data)}
+                isChecked={data.checked}
+                leftText={leftText}AllShop
+                countingItem= {sum}
+                icon_name={icon_name}
+            />);
+    }
+
+
+
 
     render() {
+        // console.warn(JSON.stringify(this.state.row));
         let border = this.state.button ? 1 : undefined;
         let borderleft = this.state.button ? 2 : 5;
         let bcolor = this.state.button ? "#ccc" : "orange";
@@ -94,17 +153,18 @@ export default class Filter extends Component {
                         placeholder="Search by Category"
                         underlineColorAndroid = 'transparent'
                         onChangeText={(search) => this.setState({search})}/>
-                        <SelectMultiple
-                        items={this.state.category}
-                        selectedItems={this.state.selected}
-                        onSelectionsChange={this.onSelectionsChange} />
+
+                       <ScrollView>
+                    {this.renderView()}
+                </ScrollView>
+
                     </View>
                 </View>
                 <View style={{padding : 10}}>
                     <TouchableHighlight 
                     underlayColor ={"#fff"} 
                     style={[styles.apply]} 
-                    onPress={()=>Actions.filterdBy({ filterdBy : this.state.selected})}>
+                    onPress={()=>Actions.filterdBy({ filterdBy : this.state.rows})}>
                         <MaterialIcons name="done" size={20} color="#fff"/>
                     </TouchableHighlight>
                 </View>       

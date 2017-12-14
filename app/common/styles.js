@@ -1,5 +1,6 @@
-import {StyleSheet} from 'react-native';
+import {StyleSheet, Dimensions} from 'react-native';
 const HEADER_HEIGHT = 64;
+const { width, height } = Dimensions.get('window');
 
 export default StyleSheet.create({
 	container: {
@@ -28,14 +29,15 @@ export default StyleSheet.create({
 		bottom : 10
 	},
 	inputusername: {
-		flex: 1,
+		width : width/1.5,
     	paddingLeft: 0,
     	backgroundColor: '#fff',
     	color: '#424242',
     	left : 10
     },
 	inputpassword: {
-		flex: 1,
+		// flex: 1,
+		width : width/1.5,
     	paddingLeft: 0,
     	backgroundColor: '#fff',
     	color: '#424242',
