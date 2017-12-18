@@ -84,17 +84,15 @@ export default class WelcomeScreen extends Component {
             <View style={styles.container}>
                 <View style={styles.row}>
                     <Image style={{ width:21, height:21, marginRight : 15}} source={require('../images/_Select_Country-128.png')} />
-        
-                        <Picker style={{width: width/1.5, height: 40, backgroundColor: '#fff'}}
-                            mode="dropdown"
-                            selectedValue={this.state.selectCountry}
-                            onValueChange={(itemValue, itemIndex) => 
-                                this.setState({selectCountry: itemValue})}>
-                                
-                                <Picker.Item label="Select country" value="" /> 
-                               {this.loadUserTypes()}
-                            </Picker>
-                            <Ionicons 
+                    <Picker style={{width: width/1.5, height: 40, backgroundColor: 'transparent'}}
+                    mode="dropdown"
+                    selectedValue={this.state.selectCountry}
+                    onValueChange={(itemValue, itemIndex) => 
+                        this.setState({selectCountry: itemValue})}>
+                    <Picker.Item label="Select country" value="" /> 
+                        {this.loadUserTypes()}
+                    </Picker>
+                    <Ionicons 
                     name="chevron-down" 
                     size={21} 
                     color="#ff8c00" 
@@ -109,7 +107,7 @@ export default class WelcomeScreen extends Component {
         
                     <Picker 
                     mode="dropdown"
-                    style={{width: width/1.5, height: 40, backgroundColor: '#fff'}} 
+                    style={{width: width/1.5, height: 40, backgroundColor: 'transparent'}} 
                         selectedValue={this.state.deliveryarea} 
                         onValueChange={(deliveryarea) => this.setState({deliveryarea})}> 
                             <Picker.Item label="Select Delivery Area" value="" /> 

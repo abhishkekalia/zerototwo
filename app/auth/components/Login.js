@@ -28,7 +28,11 @@ class Login extends Component {
 			os : (Platform.OS === 'ios') ? 2 : 1,
 
 		};
+	    this.inputs = {};
 	}
+	focusNextField(id) { 
+    	this.inputs[id].focus();
+    }
 	onBlurUser() { 
 		const { email } = this.state;
 		let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ; 
@@ -37,7 +41,7 @@ class Login extends Component {
 			{ 
 
 			MessageBarManager.showAlert({
-            message: "Plese Enter Email",
+            message: "Plese Enter Valid Email",
             alertType: 'alert',
             })
 				return false;
@@ -57,14 +61,20 @@ class Login extends Component {
 						/>
 						<TextInput
 							style={commonStyles.inputusername}
-							// onBlur={ () => this.onBlurUser() }
+							onBlur={ () => this.onBlurUser() }
 							value={this.state.email}
 							underlineColorAndroid = 'transparent'
 							autoCorrect={false}
 							placeholder="Email Address"
 							maxLength={140}
-							onSubmitEditing={() => this.onSubmit()}
-							onChangeText={(email) => this.setState({email})}
+							onSubmitEditing={() => { 
+          						this.focusNextField('two');
+          					}}
+          					returnKeyType={ "next" }
+ 					        ref={ input => { 
+ 					        	this.inputs['one'] = input;
+ 					        }}
+ 					        onChangeText={(email) => this.setState({email})}
 						/>
 					</View>
 					<View style ={commonStyles.iconpassword}>
@@ -82,8 +92,14 @@ class Login extends Component {
 							placeholder="Password"
 							secureTextEntry
 							maxLength={140}
-							onSubmitEditing={() => this.onSubmit()}
-							onChangeText={(password) => this.setState({password})}
+							onSubmitEditing={() => { 
+          						this.onSubmit();
+          					}}
+          					returnKeyType={ "done" }
+ 					        ref={ input => { 
+ 					        	this.inputs['two'] = input;
+ 					        }}
+ 					        onChangeText={(password) => this.setState({password})}
 						/>
 					</View>
 				</View>
@@ -95,14 +111,11 @@ class Login extends Component {
 
 
 				{errorStatus ? <Text style={commonStyles.errorText}>{errorStatus}</Text> : undefined}
+<View style={{alignItems: 'center'}}>
+				<Text style={{ padding : 20 }}>Forgot password</Text>
 
-				<TouchableOpacity style={{ alignItems: 'center', padding : 20 }}>
-				<Text>Forgot password</Text>
-				</TouchableOpacity>
-
-				<TouchableOpacity style={{  alignItems: 'center', padding : 20 }}>
-				<Text style={{color : '#87cefa'}}>New Customer ?</Text>
-				</TouchableOpacity>
+				<Text style={{color : '#87cefa' }}>New Customer ?</Text>
+				</View>
 
 
 				<Button
@@ -124,7 +137,7 @@ class Login extends Component {
 		if(reg.test(email) === false) 
 		{ 
 			MessageBarManager.showAlert({
-            message: "Plese Enter Valid Email",
+            message: "Please Enter Valid Email",
             alertType: 'alert',
             })
 			return false;
@@ -132,7 +145,7 @@ class Login extends Component {
 		if (!password.length)
 		{ 
 			MessageBarManager.showAlert({
-            	message: "Plese Enter Your Password",
+            	message: "Please Enter Your Password",
             	alertType: 'alert',
         	})
 			return false

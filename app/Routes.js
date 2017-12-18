@@ -173,7 +173,8 @@ const Routes = ({loading, needSignIn}) => (
                         key="register" 
                         component={Register} 
                         title="Registaration" 
-                        navBar={CustomGenNavBar} />
+                        navBar={CustomGenNavBar} 
+                        type={ActionConst.ANDROID_BACK}/>
                     </Stack>
 
                     <Stack key="addressbook" >
@@ -181,7 +182,8 @@ const Routes = ({loading, needSignIn}) => (
                         key="address" 
                         component={AddressBook} 
                         title="Addressbook" 
-                        hideNavBar={true}/> 
+                        hideNavBar={true}
+                        type={ActionConst.ANDROID_BACK}/> 
                     </Stack>
 
                     <Stack key="deascriptionPage" >
@@ -189,7 +191,8 @@ const Routes = ({loading, needSignIn}) => (
                         key="deascription" 
                         component={ProductDescription} 
                         title="Description" 
-                        navBar={CustomGenNavBar} />
+                        navBar={CustomGenNavBar} 
+                        type={ActionConst.ANDROID_BACK}/>
                     </Stack>
 
                     <Stack key="contact">    
@@ -197,14 +200,16 @@ const Routes = ({loading, needSignIn}) => (
                         key="contact" 
                         component={Contact} 
                         title="Contact Us" 
-                        navBar={CustomGenNavBar} />
+                        navBar={CustomGenNavBar} 
+                        type={ActionConst.ANDROID_BACK}/>
                     </Stack>
 
                     <Stack key="profile" >
                         <Scene 
                         key="profile" 
                         component={ProfilePage} 
-                        title="Profile"/>
+                        title="Profile" 
+                        type={ActionConst.ANDROID_BACK}/>
                     </Stack> 
 
                     <Stack key="newaddress">

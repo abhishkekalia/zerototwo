@@ -31,7 +31,7 @@ export default StyleSheet.create({
 	inputusername: {
 		width : width/1.5,
     	paddingLeft: 0,
-    	backgroundColor: '#fff',
+    	// backgroundColor: '#fff',
     	color: '#424242',
     	left : 10
     },
@@ -39,7 +39,7 @@ export default StyleSheet.create({
 		// flex: 1,
 		width : width/1.5,
     	paddingLeft: 0,
-    	backgroundColor: '#fff',
+    	// backgroundColor: '#fff',
     	color: '#424242',
     	left : 10
 	},

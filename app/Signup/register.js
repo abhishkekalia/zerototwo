@@ -41,6 +41,7 @@ class Register extends Component {
 	constructor(props) {
 		super(props); 
 		this.toggleSwitch = this.toggleSwitch.bind(this);
+	    this.focusNextField = this.focusNextField.bind(this);
     	this.state = {
             userTypes: [], 
             selectCountry: '',
@@ -57,11 +58,18 @@ class Register extends Component {
 			type : '',
 			os : (Platform.OS === 'ios') ? 2 : 1,
 		};
+	    this.inputs = {};
+
 	}
 	componentDidMount(){
         this.fetchData();
 
     }
+
+    focusNextField(id) { 
+    	this.inputs[id].focus();
+    }
+
     eye() {
     	this.setState({
     		hidden : !this.state.hidden
@@ -114,9 +122,16 @@ class Register extends Component {
 							value={this.state.fullname}
 							underlineColorAndroid = 'transparent'
 							autoCorrect={false}
-							placeholder="Username"
+							placeholder="Fullname"
 							maxLength={140}
-							onSubmitEditing={() => this.onSubmit()}
+          					onSubmitEditing={() => { 
+          						this.focusNextField('two');
+          					}}
+          					returnKeyType={ "next" }
+ 					        ref={ input => { 
+ 					        	this.inputs['one'] = input;
+ 					        }}
+
 							onChangeText={(fullname) => this.setState({fullname})}
 						/>
 					</View>
@@ -130,7 +145,13 @@ class Register extends Component {
 							autoCorrect={false}
 							placeholder="Email Address"
 							maxLength={140}
-							onSubmitEditing={() => this.onSubmit()}
+          					onSubmitEditing={() => { 
+          						this.focusNextField('three');
+          					}}
+          					returnKeyType={ "next" }
+ 					        ref={ input => { 
+ 					        	this.inputs['two'] = input;
+ 					        }}
 							onChangeText={(email) => this.setState({email})}
 						/>
 					</View>
@@ -144,8 +165,14 @@ class Register extends Component {
 							autoCorrect={false}
 							placeholder="Password"
 							maxLength={140}
-							onSubmitEditing={() => this.onSubmit()}
-                    		onChangeText={ (password) => this.setState({ password }) }
+          					onSubmitEditing={() => { 
+          						this.focusNextField('four');
+          					}}
+          					returnKeyType={ "next" }
+ 					        ref={ input => { 
+ 					        	this.inputs['three'] = input;
+ 					        }}
+ 					        onChangeText={ (password) => this.setState({ password }) }
 						/>
 
 					</View>
@@ -193,8 +220,15 @@ class Register extends Component {
 							autoCorrect={false}
 							placeholder="Mobile Number For (Order Update)"
 							maxLength={140}
-							onSubmitEditing={() => this.onSubmit()}
-							onChangeText={(contact) => this.setState({contact})}
+							keyboardType={'numeric'}
+          					onSubmitEditing={() => { 
+          						this.focusNextField('five');
+          					}}
+          					returnKeyType={ "next" }
+ 					        ref={ input => { 
+ 					        	this.inputs['four'] = input;
+ 					        }}
+ 					        onChangeText={(contact) => this.setState({contact})}
 						/>
 					</View>
 
@@ -204,7 +238,7 @@ class Register extends Component {
 					        				alignItems: 'center' ,
 					        				marginBottom : 10
 					        					}]}>						
-						<Picker style={{width: width/1.5, height: 40, backgroundColor: '#fff'}}
+						<Picker style={{width: width/1.5, height: 40, backgroundColor: 'transparent'}}
                             mode="dropdown"
                             selectedValue={this.state.selectCountry}
                             onValueChange={(itemValue, itemIndex) => 
@@ -229,7 +263,10 @@ class Register extends Component {
 							autoCorrect={false}
 							placeholder="Address"
 							maxLength={140}
-							onSubmitEditing={() => this.onSubmit()}
+          					returnKeyType={ "done" }
+ 					        ref={ input => { 
+ 					        	this.inputs['five'] = input;
+ 					        }}
 							onChangeText={(address) => this.setState({address})}
 						/>
 					</View>
@@ -330,12 +367,6 @@ validate(){
 		return false
 	}
 		return true
-
-	// fullname.length ? null : this.alert("Fullname")
-	// email.length ? null : this.alert("Email")
-	// password.length ? null : this.alert("Password")
-	// contact.length ? null : this.alert("Contact")
-	// address.length ? null : this.alert("Address")
 }
 
 	onSubmit() {

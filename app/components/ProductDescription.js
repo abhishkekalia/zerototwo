@@ -228,7 +228,7 @@ if(responseData.status){
                                 <Picker.Item label="Select color" value="" />
                                 <Picker.Item label="Red" value="red" />
                                 <Picker.Item label="Yellow" value="yellow" />
-                                <Picker.Item label="Pick" value="pink" />
+                                <Picker.Item label="Pink" value="pink" />
                             </Picker>
                             <Icon
                             name="chevron-down" 

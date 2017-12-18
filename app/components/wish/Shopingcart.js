@@ -248,74 +248,63 @@ export default class Shopingcart extends Component {
     
         return (
             <View style={{ 
-                flexDirection: 'column' ,
-                marginTop : 2, 
-                borderWidth : 0.5, 
-                borderColor : "#ccc", 
-                borderRadius : 5, 
-            }}>
-                        <View style={{ 
-                            flexDirection: 'row', 
-                            backgroundColor : "#fff"}}>
+            flexDirection: 'column' ,
+            marginTop : 2, 
+            borderWidth : 0.5, 
+            borderColor : "#ccc", 
+            borderRadius : 5}}>
+                <View style={{ 
+                flexDirection: 'row', 
+                backgroundColor : "#fff"}}>
                             
-                                <View style={{flexDirection: 'column', justifyContent : 'space-between'}}>
-                                    <View style={{ flexDirection: 'row'}}>
-                                    <Image style={[styles.thumb, {margin: 10}]} 
-                                    source={{ uri : data.productImages[0] ? data.productImages[0].image : null}}/>
-                                    <View>
-  
-                                    <TouchableHighlight
-                                        underlayColor='transparent'
-                                        onPress={this.viewNote.bind(this, data)} 
-                                        style={styles.row} >
-                                        
-                                        <Text > {data.product_name} </Text>
-                                    
-                                    </TouchableHighlight>
-                                        <View style={{ flexDirection : "row"}}>
-                                        
-                                            <Text> Quentity : </Text>
-                                            <TouchableOpacity 
-                                                style={styles.qtybutton} 
-                                                onPress={(Quentity)=> this.setState({Quentity : this.state.Quentity -1})}>
-
-                                                <Text> - </Text>
+                    <View style={{flexDirection: 'column', justifyContent : 'space-between'}}>
+                        <View style={{ flexDirection: 'row'}}>
+                            <Image style={[styles.thumb, {margin: 10}]} 
+                            source={{ uri : data.productImages[0] ? data.productImages[0].image : null}}/>
+                        <View>
+                            <TouchableHighlight
+                            underlayColor='transparent'
+                            onPress={this.viewNote.bind(this, data)} 
+                            style={styles.row} >        
+                                <Text > {data.product_name} </Text>
+                            </TouchableHighlight>
+                            <View style={{ flexDirection : "row"}}>
+                                <Text> Quentity : </Text>
+                                <TouchableOpacity 
+                                style={styles.qtybutton} 
+                                onPress={(Quentity)=> this.setState({Quentity : this.state.Quentity -1})}>
+                                    <Text> - </Text>        
+                                </TouchableOpacity>
                                             
-                                            </TouchableOpacity>
+                                <Text style={[styles.qtybutton, {color : "#87cefa"}]}> { this.state.Quentity } </Text>
                                             
-                                            <Text style={[styles.qtybutton, {color : "#87cefa"}]}> { this.state.Quentity } </Text>
-                                            
-                                            <TouchableOpacity 
-                                                style={styles.qtybutton} 
-                                                onPress={(Quentity)=> this.setState({Quentity: this.state.Quentity +1 })}>
-                                                
-                                                <Text> +</Text>
-                                            
-                                            </TouchableOpacity>
-                                        
-                                        </View>
-                                        <Text >US $ : {data.special_price} </Text>
-                                        <View style={{ flexDirection : "row"}}>
-                                        <Text style={{fontSize:15, color: color, textDecorationLine: textDecorationLine}}> US $ {data.price}  </Text>
-                                        <Text>| {data.special_price}</Text>
-                                        </View>
-                                        <Text > Total :{data.price} </Text>
-                                    </View>
-                                    </View>
-                                </View>
+                                <TouchableOpacity 
+                                style={styles.qtybutton} 
+                                onPress={(Quentity)=> this.setState({Quentity: this.state.Quentity +1 })}>
+                                    <Text> +</Text>        
+                                </TouchableOpacity>
                             </View>
-                
+                            <Text >US $ : {data.special_price} </Text>
+                            <View style={{ flexDirection : "row"}}>
+                                <Text style={{fontSize:15, color: color, textDecorationLine: textDecorationLine}}> US $ {data.price}  </Text>
+                                <Text>| {data.special_price}</Text>
+                            </View>
+                                <Text > Total :{data.price} </Text>
+                        </View>
+                    </View>
+                </View>
+            </View>
                 <View style={styles.bottom}>
-                        <TouchableOpacity 
-                        onPress={()=> this.removeFromCart(data.cart_id, data.product_id)}
-                        style={[styles.wishbutton, {flexDirection : 'row', justifyContent: "center"}]}>
+                    <TouchableOpacity 
+                    onPress={()=> this.removeFromCart(data.cart_id, data.product_id)}
+                    style={[styles.wishbutton, {flexDirection : 'row', justifyContent: "center"}]}>
                         <Entypo name="cross" size={20} color="#87cefa"/>
-                            <Text style={{ left : 5}}>Remove</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={[styles.wishbutton, {flexDirection : 'row', justifyContent: "center"}]}>
-                            <Entypo name="heart-outlined" size={20} color="#87cefa"/> 
-                            <Text style={{ left :5}}>Add To wishlist</Text>
-                        </TouchableOpacity>
+                        <Text style={{ left : 5}}>Remove</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={[styles.wishbutton, {flexDirection : 'row', justifyContent: "center"}]}>
+                        <Entypo name="heart-outlined" size={20} color="#87cefa"/> 
+                        <Text style={{ left :5}}>Add To wishlist</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         )

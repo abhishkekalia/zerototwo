@@ -277,7 +277,7 @@ export default class MainView extends Component {
             contentContainerStyle={styles.contentContainer} 
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="always">
-                <StatusBar backgroundColor="blue" barStyle="light-content"/>
+                <StatusBar backgroundColor="#a9d5d1" barStyle="light-content"/>
                 <View style={{ flexDirection : 'row'}}>
                     <View style={ styles.button,[{ 
                         width : width/2,
